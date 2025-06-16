@@ -1,26 +1,29 @@
 import { Action, ActionPanel, List, showToast, Toast } from '@raycast/api'
 import { runAppleScript } from '@raycast/utils'
-import getConnectionNames from './list-viscosity-connections'
+import getConnectionNames, { Connection } from './list-viscosity-connections'
 import { useEffect, useState } from 'react'
 
 export default function Command() {
-  const [items, setItems] = useState<string[]>([])
-
+  const [connections, setConnections] = useState<Connection[]>([])
   useEffect(() => {
     const fetchConnections = async () => {
-      const names = await getConnectionNames()
-      setItems(names)
+      setConnections(await getConnectionNames())
     }
     fetchConnections()
-  }, [])
+  }, [getConnectionNames])
 
-  const handleSelect = async (item: string) => {
+  const handleSelect = async (selectedConnection: Connection) => {
     try {
       await runAppleScript(`
         tell application "Viscosity"
-            connect "${item}"
+            connect "${selectedConnection.name}"
         end tell
      `)
+      setConnections(
+        connections.map((c) =>
+          c === selectedConnection ? { ...c, state: 'Connected' } : c,
+        ),
+      )
       await showToast({ style: Toast.Style.Success, title: 'Connected' })
     } catch (e) {
       console.error(e)
@@ -30,13 +33,17 @@ export default function Command() {
 
   return (
     <List>
-      {items.map((item, index) => (
+      {connections.map((connection, index) => (
         <List.Item
           key={index}
-          title={item}
+          title={connection.name}
+          icon={connection.state === 'Connected' ? '🟢' : '🔴'}
           actions={
             <ActionPanel>
-              <Action title="Select" onAction={() => handleSelect(item)} />
+              <Action
+                title="Select"
+                onAction={() => handleSelect(connection)}
+              />
             </ActionPanel>
           }
         />

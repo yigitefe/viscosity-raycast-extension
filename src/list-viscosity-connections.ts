@@ -1,22 +1,28 @@
 import { showToast, Toast } from '@raycast/api'
 import { runAppleScript } from '@raycast/utils'
 
-export default async function getConnectionNames(): Promise<string[]> {
+export type Connection = { name: string; state: string }
+
+export default async function getConnectionNames(): Promise<Connection[]> {
   try {
     const connectionNames: string = await runAppleScript(`
       tell application "Viscosity"
-        set connectionNames to {}
         set connectionCount to count of connections
+        set resultList to {}
 
         repeat with i from 1 to connectionCount
           set connectionName to name of connection i
-          set end of connectionNames to connectionName
+          set connectionState to state of connection i
+          set end of resultList to connectionName & "||" & connectionState
         end repeat
 
-        return connectionNames
+        return resultList
       end tell
     `)
-    return connectionNames.split(',').map((name) => name.trim())
+    return connectionNames.split(',').map((cn) => {
+      const [name, state] = cn.trim().split('||')
+      return { name, state }
+    })
   } catch (e) {
     console.error(e)
     await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
