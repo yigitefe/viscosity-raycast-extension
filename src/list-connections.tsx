@@ -1,9 +1,18 @@
-import { ActionPanel, Action, List, showToast, Toast } from '@raycast/api'
+import { Action, ActionPanel, List, showToast, Toast } from '@raycast/api'
 import { runAppleScript } from '@raycast/utils'
-import { getConnectionNames } from './list-viscosity-connections'
+import getConnectionNames from './list-viscosity-connections'
+import { useEffect, useState } from 'react'
 
 export default function Command() {
-  const items = [...getConnectionNames(), 'Fake']
+  const [items, setItems] = useState<string[]>([])
+
+  useEffect(() => {
+    const fetchConnections = async () => {
+      const names = await getConnectionNames()
+      setItems(names)
+    }
+    fetchConnections()
+  }, [])
 
   const handleSelect = async (item: string) => {
     try {

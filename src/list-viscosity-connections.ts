@@ -1,44 +1,25 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import os from 'os'
+import { showToast, Toast } from '@raycast/api'
+import { runAppleScript } from '@raycast/utils'
 
-const rootDir = path.join(
-  os.homedir(),
-  '/Library/Application Support/Viscosity/OpenVPN',
-)
-
-function extractViscosityName(configContent: string): string | null {
-  const match = configContent.match(/#viscosity name (.+)/)
-  return match ? match[1].trim() : null
-}
-
-function processConfigFile(configPath: string): string | null {
+export default async function getConnectionNames(): Promise<string[]> {
   try {
-    const content = fs.readFileSync(configPath, 'utf8')
-    return extractViscosityName(content)
-  } catch (error) {
-    console.error(`Error reading ${configPath}:`, error)
-    return null
+    const connectionNames: string = await runAppleScript(`
+      tell application "Viscosity"
+        set connectionNames to {}
+        set connectionCount to count of connections
+
+        repeat with i from 1 to connectionCount
+          set connectionName to name of connection i
+          set end of connectionNames to connectionName
+        end repeat
+
+        return connectionNames
+      end tell
+    `)
+    return connectionNames.split(',').map((name) => name.trim())
+  } catch (e) {
+    console.error(e)
+    await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
+    return []
   }
-}
-
-export function getConnectionNames() {
-  const subdirs = fs
-    .readdirSync(rootDir, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name)
-
-  const names: string[] = []
-
-  subdirs.forEach((dir) => {
-    const configPath = path.join(rootDir, dir, 'config.conf')
-    if (fs.existsSync(configPath)) {
-      const name = processConfigFile(configPath)
-      if (name) {
-        names.push(name)
-      }
-    }
-  })
-
-  return names
 }
