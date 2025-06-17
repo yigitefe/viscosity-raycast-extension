@@ -1,7 +1,7 @@
 import { Action, ActionPanel, List, showToast, Toast } from '@raycast/api'
-import { runAppleScript } from '@raycast/utils'
-import getConnectionNames, { Connection } from './list-viscosity-connections'
 import { useEffect, useState } from 'react'
+import { Connection, ConnectionState } from './types'
+import { connect, getConnectionNames } from './scripts'
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -12,21 +12,26 @@ export default function Command() {
     fetchConnections()
   }, [getConnectionNames])
 
+  const setConnectionState = (
+    selectedConnection: Connection,
+    state: string,
+  ) => {
+    setConnections(
+      connections.map((c) => (c === selectedConnection ? { ...c, state } : c)),
+    )
+  }
+
   const handleSelect = async (selectedConnection: Connection) => {
     try {
-      await runAppleScript(`
-        tell application "Viscosity"
-            connect "${selectedConnection.name}"
-        end tell
-     `)
-      setConnections(
-        connections.map((c) =>
-          c === selectedConnection ? { ...c, state: 'Connected' } : c,
-        ),
-      )
-      await showToast({ style: Toast.Style.Success, title: 'Connected' })
+      await connect(selectedConnection.name)
+      setConnectionState(selectedConnection, ConnectionState.Connected)
+      await showToast({
+        style: Toast.Style.Success,
+        title: ConnectionState.Connected,
+      })
     } catch (e) {
       console.error(e)
+      setConnectionState(selectedConnection, ConnectionState.Disconnected)
       await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
     }
   }
