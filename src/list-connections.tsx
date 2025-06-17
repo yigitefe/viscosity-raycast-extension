@@ -1,7 +1,7 @@
 import { Action, ActionPanel, List, showToast, Toast } from '@raycast/api'
 import { useEffect, useState } from 'react'
 import { Connection, ConnectionState } from './types'
-import { connect, getConnectionNames } from './scripts'
+import { connect, disconnect, getConnectionNames } from './scripts'
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -21,17 +21,31 @@ export default function Command() {
     )
   }
 
+  const isConnectionActive = (connection: Connection) =>
+    connection.state === ConnectionState.Connected
+
+  const getOppositeConnectionState = (connection: Connection) =>
+    isConnectionActive(connection)
+      ? ConnectionState.Disconnected
+      : ConnectionState.Connected
+
   const handleSelect = async (selectedConnection: Connection) => {
     try {
-      await connect(selectedConnection.name)
-      setConnectionState(selectedConnection, ConnectionState.Connected)
+      const targetState = getOppositeConnectionState(selectedConnection)
+
+      if (isConnectionActive(selectedConnection))
+        await disconnect(selectedConnection.name)
+      else await connect(selectedConnection.name)
+
+      setConnectionState(selectedConnection, targetState)
+
       await showToast({
         style: Toast.Style.Success,
-        title: ConnectionState.Connected,
+        title: targetState,
       })
     } catch (e) {
       console.error(e)
-      setConnectionState(selectedConnection, ConnectionState.Disconnected)
+      setConnectionState(selectedConnection, selectedConnection.state)
       await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
     }
   }

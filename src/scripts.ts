@@ -41,3 +41,12 @@ export const connect = async (name: string): Promise<void> => {
     await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
   }
 }
+
+export const disconnect = async (name: string): Promise<void> => {
+  try {
+    await runAppleScript(`tell application "Viscosity" to disconnect "${name}"`)
+  } catch (e) {
+    console.error(e)
+    await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
+  }
+}
