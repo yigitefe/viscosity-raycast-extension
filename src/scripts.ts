@@ -1,6 +1,6 @@
-import { showToast, Toast } from '@raycast/api'
-import { runAppleScript } from '@raycast/utils'
-import { Connection } from './types'
+import { showToast, Toast } from "@raycast/api"
+import { runAppleScript } from "@raycast/utils"
+import { Connection } from "./types"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
   try {
@@ -18,13 +18,13 @@ export const getConnectionNames = async (): Promise<Connection[]> => {
         return resultList
       end tell
     `)
-    return connectionNames.split(',').map((cn) => {
-      const [name, state] = cn.trim().split('||')
+    return connectionNames.split(",").map((cn) => {
+      const [name, state] = cn.trim().split("||")
       return { name, state }
     })
   } catch (e) {
     console.error(e)
-    await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
+    await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
     return []
   }
 }
@@ -38,7 +38,7 @@ export const connect = async (name: string): Promise<void> => {
     `)
   } catch (e) {
     console.error(e)
-    await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
+    await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
   }
 }
 
@@ -47,6 +47,6 @@ export const disconnect = async (name: string): Promise<void> => {
     await runAppleScript(`tell application "Viscosity" to disconnect "${name}"`)
   } catch (e) {
     console.error(e)
-    await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
+    await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
   }
 }

@@ -1,7 +1,7 @@
-import { Action, ActionPanel, List, showToast, Toast } from '@raycast/api'
-import { useEffect, useState } from 'react'
-import { Connection, ConnectionState } from './types'
-import { connect, disconnect, getConnectionNames } from './scripts'
+import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
+import { useEffect, useState } from "react"
+import { Connection, ConnectionState } from "./types"
+import { connect, disconnect, getConnectionNames } from "./scripts"
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -46,7 +46,7 @@ export default function Command() {
     } catch (e) {
       console.error(e)
       setConnectionState(selectedConnection, selectedConnection.state)
-      await showToast({ style: Toast.Style.Failure, title: 'Error occurred' })
+      await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
     }
   }
 
@@ -56,7 +56,7 @@ export default function Command() {
         <List.Item
           key={index}
           title={connection.name}
-          icon={connection.state === 'Connected' ? '🟢' : '🔴'}
+          icon={connection.state === "Connected" ? "🟢" : "🔴"}
           actions={
             <ActionPanel>
               <Action
