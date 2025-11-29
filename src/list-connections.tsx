@@ -2,9 +2,11 @@ import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useEffect, useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { connect, disconnect, getConnectionNames } from "./scripts"
+import { ErrorMessages, SuccessMessages } from "./constants"
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
+
   useEffect(() => {
     const fetchConnections = async () => {
       setConnections(await getConnectionNames())
@@ -41,12 +43,18 @@ export default function Command() {
 
       await showToast({
         style: Toast.Style.Success,
-        title: targetState,
+        title:
+          targetState === ConnectionState.Connected
+            ? SuccessMessages.Connected
+            : SuccessMessages.Disconnected,
       })
     } catch (e) {
       console.error(e)
       setConnectionState(selectedConnection, selectedConnection.state)
-      await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
+      await showToast({
+        style: Toast.Style.Failure,
+        title: ErrorMessages.Generic,
+      })
     }
   }
 

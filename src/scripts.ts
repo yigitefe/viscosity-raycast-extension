@@ -1,6 +1,7 @@
 import { showToast, Toast } from "@raycast/api"
 import { runAppleScript } from "@raycast/utils"
 import { Connection } from "./types"
+import { ErrorMessages } from "./constants"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
   try {
@@ -24,7 +25,10 @@ export const getConnectionNames = async (): Promise<Connection[]> => {
     })
   } catch (e) {
     console.error(e)
-    await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
+    await showToast({
+      style: Toast.Style.Failure,
+      title: ErrorMessages.Generic,
+    })
     return []
   }
 }
@@ -38,7 +42,10 @@ export const connect = async (name: string): Promise<void> => {
     `)
   } catch (e) {
     console.error(e)
-    await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
+    await showToast({
+      style: Toast.Style.Failure,
+      title: ErrorMessages.Generic,
+    })
   }
 }
 
@@ -47,6 +54,9 @@ export const disconnect = async (name: string): Promise<void> => {
     await runAppleScript(`tell application "Viscosity" to disconnect "${name}"`)
   } catch (e) {
     console.error(e)
-    await showToast({ style: Toast.Style.Failure, title: "Error occurred" })
+    await showToast({
+      style: Toast.Style.Failure,
+      title: ErrorMessages.Generic,
+    })
   }
 }
