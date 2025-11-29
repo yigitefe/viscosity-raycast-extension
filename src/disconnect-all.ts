@@ -1,13 +1,13 @@
 import { showToast, Toast } from "@raycast/api"
 import { runAppleScript } from "@raycast/utils"
-import { ErrorMessages, SuccessMessages } from "./constants"
+import { ErrorMessages, StateMessages } from "./constants"
 
 export default async function main() {
   try {
     await runAppleScript('tell application "Viscosity" to disconnectall')
     await showToast({
       style: Toast.Style.Success,
-      title: SuccessMessages.Disconnecting,
+      title: StateMessages.Disconnected,
     })
   } catch (e) {
     console.error(e)

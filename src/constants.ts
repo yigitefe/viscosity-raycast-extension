@@ -2,9 +2,11 @@ export const ErrorMessages = {
   Generic: "An error occurred",
 } as const
 
-export const SuccessMessages = {
+export const StateMessages = {
   Connecting: "Connecting...",
   Disconnecting: "Disconnecting...",
+  Connected: "Connected",
+  Disconnected: "Disconnected",
 } as const
 
 export const ActionTitles = {
@@ -15,4 +17,5 @@ export const ActionTitles = {
 export const Icons = {
   Connected: "🟢",
   Disconnected: "🔴",
+  Changing: "🟡",
 } as const

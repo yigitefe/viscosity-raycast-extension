@@ -2,22 +2,65 @@ import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useEffect, useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { connect, disconnect, getConnectionNames } from "./scripts"
-import {
-  ErrorMessages,
-  Icons,
-  SuccessMessages,
-  ActionTitles,
-} from "./constants"
+import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
+
+const stateChangeTimeout = 3000
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
 
+  const fetchConnections = async () => {
+    const connectionNames = await getConnectionNames()
+    setConnections(connectionNames)
+    return connectionNames
+  }
+
   useEffect(() => {
-    const fetchConnections = async () => {
-      setConnections(await getConnectionNames())
-    }
     fetchConnections()
   }, [getConnectionNames])
+
+  const handleSelect = async (selectedConnection: Connection) => {
+    try {
+      const targetState = getOppositeConnectionState(selectedConnection)
+      const toast = await showToast({
+        style: Toast.Style.Animated,
+        title:
+          targetState === ConnectionState.Connected
+            ? StateMessages.Connecting
+            : StateMessages.Disconnecting,
+      })
+      setConnectionState(selectedConnection, ConnectionState.Changing)
+
+      if (isConnectionActive(selectedConnection))
+        await disconnect(selectedConnection.name)
+      else await connect(selectedConnection.name)
+
+      setTimeout(async () => {
+        const connections = await fetchConnections()
+        const connection = connections.find(
+          (c) => c.name === selectedConnection.name,
+        )
+        if (connection && isConnectionActive(connection)) {
+          toast.style = Toast.Style.Success
+          toast.title = StateMessages.Connected
+        } else {
+          toast.style = Toast.Style.Success
+          toast.title = StateMessages.Disconnected
+        }
+      }, stateChangeTimeout)
+    } catch (e) {
+      console.error(e)
+      await showToast({
+        style: Toast.Style.Failure,
+        title: ErrorMessages.Generic,
+      })
+    }
+  }
+
+  const getOppositeConnectionState = (connection: Connection) =>
+    isConnectionActive(connection)
+      ? ConnectionState.Disconnected
+      : ConnectionState.Connected
 
   const setConnectionState = (
     selectedConnection: Connection,
@@ -31,36 +74,21 @@ export default function Command() {
   const isConnectionActive = (connection: Connection) =>
     connection.state === ConnectionState.Connected
 
-  const getOppositeConnectionState = (connection: Connection) =>
-    isConnectionActive(connection)
-      ? ConnectionState.Disconnected
-      : ConnectionState.Connected
-
-  const handleSelect = async (selectedConnection: Connection) => {
-    try {
-      const targetState = getOppositeConnectionState(selectedConnection)
-
-      if (isConnectionActive(selectedConnection))
-        await disconnect(selectedConnection.name)
-      else await connect(selectedConnection.name)
-
-      setConnectionState(selectedConnection, targetState)
-
-      await showToast({
-        style: Toast.Style.Success,
-        title:
-          targetState === ConnectionState.Connected
-            ? SuccessMessages.Connecting
-            : SuccessMessages.Disconnecting,
-      })
-    } catch (e) {
-      console.error(e)
-      setConnectionState(selectedConnection, selectedConnection.state)
-      await showToast({
-        style: Toast.Style.Failure,
-        title: ErrorMessages.Generic,
-      })
+  const getIcon = (connection: Connection) => {
+    switch (connection.state) {
+      case ConnectionState.Connected:
+        return Icons.Connected
+      case ConnectionState.Disconnected:
+        return Icons.Disconnected
+      default:
+        return Icons.Changing
     }
+  }
+
+  const getTitle = (connection: Connection) => {
+    return isConnectionActive(connection)
+      ? ActionTitles.Disconnect
+      : ActionTitles.Connect
   }
 
   return (
@@ -69,19 +97,11 @@ export default function Command() {
         <List.Item
           key={index}
           title={connection.name}
-          icon={
-            isConnectionActive(connection)
-              ? Icons.Connected
-              : Icons.Disconnected
-          }
+          icon={getIcon(connection)}
           actions={
             <ActionPanel>
               <Action
-                title={
-                  isConnectionActive(connection)
-                    ? ActionTitles.Disconnect
-                    : ActionTitles.Connect
-                }
+                title={getTitle(connection)}
                 onAction={() => handleSelect(connection)}
               />
             </ActionPanel>

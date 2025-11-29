@@ -1,4 +1,5 @@
 export enum ConnectionState {
+  Changing = "Changing",
   Connected = "Connected",
   Disconnected = "Disconnected",
 }
