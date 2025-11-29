@@ -3,6 +3,16 @@ export const ErrorMessages = {
 } as const
 
 export const SuccessMessages = {
-  Connected: "Connected",
-  Disconnected: "Disconnected",
+  Connecting: "Connecting...",
+  Disconnecting: "Disconnecting...",
+} as const
+
+export const ActionTitles = {
+  Connect: "Connect",
+  Disconnect: "Disconnect",
+} as const
+
+export const Icons = {
+  Connected: "🟢",
+  Disconnected: "🔴",
 } as const

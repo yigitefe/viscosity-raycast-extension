@@ -2,7 +2,12 @@ import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useEffect, useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { connect, disconnect, getConnectionNames } from "./scripts"
-import { ErrorMessages, SuccessMessages } from "./constants"
+import {
+  ErrorMessages,
+  Icons,
+  SuccessMessages,
+  ActionTitles,
+} from "./constants"
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -16,7 +21,7 @@ export default function Command() {
 
   const setConnectionState = (
     selectedConnection: Connection,
-    state: string,
+    state: ConnectionState,
   ) => {
     setConnections(
       connections.map((c) => (c === selectedConnection ? { ...c, state } : c)),
@@ -45,8 +50,8 @@ export default function Command() {
         style: Toast.Style.Success,
         title:
           targetState === ConnectionState.Connected
-            ? SuccessMessages.Connected
-            : SuccessMessages.Disconnected,
+            ? SuccessMessages.Connecting
+            : SuccessMessages.Disconnecting,
       })
     } catch (e) {
       console.error(e)
@@ -64,11 +69,19 @@ export default function Command() {
         <List.Item
           key={index}
           title={connection.name}
-          icon={connection.state === "Connected" ? "🟢" : "🔴"}
+          icon={
+            isConnectionActive(connection)
+              ? Icons.Connected
+              : Icons.Disconnected
+          }
           actions={
             <ActionPanel>
               <Action
-                title="Select"
+                title={
+                  isConnectionActive(connection)
+                    ? ActionTitles.Disconnect
+                    : ActionTitles.Connect
+                }
                 onAction={() => handleSelect(connection)}
               />
             </ActionPanel>

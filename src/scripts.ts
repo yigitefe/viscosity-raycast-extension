@@ -1,6 +1,6 @@
 import { showToast, Toast } from "@raycast/api"
 import { runAppleScript } from "@raycast/utils"
-import { Connection } from "./types"
+import { Connection, ConnectionState } from "./types"
 import { ErrorMessages } from "./constants"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
@@ -21,7 +21,7 @@ export const getConnectionNames = async (): Promise<Connection[]> => {
     `)
     return connectionNames.split(",").map((cn) => {
       const [name, state] = cn.trim().split("||")
-      return { name, state }
+      return { name, state: state as ConnectionState }
     })
   } catch (e) {
     console.error(e)

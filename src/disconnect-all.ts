@@ -7,7 +7,7 @@ export default async function main() {
     await runAppleScript('tell application "Viscosity" to disconnectall')
     await showToast({
       style: Toast.Style.Success,
-      title: SuccessMessages.Disconnected,
+      title: SuccessMessages.Disconnecting,
     })
   } catch (e) {
     console.error(e)
