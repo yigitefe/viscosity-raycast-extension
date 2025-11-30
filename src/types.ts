@@ -1,3 +1,4 @@
+// Real Viscosity statuses: Connecting, Authenticating, Connected, Disconnecting, Disconnected
 export enum ConnectionState {
   Changing = "Changing",
   Connected = "Connected",

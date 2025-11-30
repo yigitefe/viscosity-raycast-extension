@@ -8,16 +8,17 @@ const stateChangeTimeout = 3000
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const compareConnections = (a: Connection, b: Connection) => {
     const priority = {
       [ConnectionState.Connected]: 0,
       [ConnectionState.Changing]: 0,
-      [ConnectionState.Disconnected]: 2,
+      [ConnectionState.Disconnected]: 1,
     }
 
-    const stateA = priority[a.state] ?? 2
-    const stateB = priority[b.state] ?? 2
+    const stateA = priority[a.state] ?? 1
+    const stateB = priority[b.state] ?? 1
 
     if (stateA !== stateB) {
       return stateA - stateB
@@ -35,7 +36,7 @@ export default function Command() {
 
   useEffect(() => {
     fetchConnections()
-  }, [getConnectionNames])
+  }, [])
 
   const handleSelect = async (selectedConnection: Connection) => {
     try {
@@ -84,11 +85,11 @@ export default function Command() {
     selectedConnection: Connection,
     state: ConnectionState,
   ) => {
-    setConnections(
-      connections
-        .map((c) => (c === selectedConnection ? { ...c, state } : c))
-        .sort(compareConnections),
-    )
+    const connectionNames = connections
+      .map((c) => (c === selectedConnection ? { ...c, state } : c))
+      .sort(compareConnections)
+    setConnections(connectionNames)
+    setTimeout(() => setSelectedId(selectedConnection.name), 50)
   }
 
   const isConnectionActive = (connection: Connection) =>
@@ -111,23 +112,42 @@ export default function Command() {
       : ActionTitles.Connect
   }
 
+  const activeConnections = connections.filter(
+    (c) => c.state !== ConnectionState.Disconnected,
+  )
+  const disconnectedConnections = connections.filter(
+    (c) => c.state === ConnectionState.Disconnected,
+  )
+
+  const renderConnection = (connection: Connection) => (
+    <List.Item
+      key={connection.name}
+      id={connection.name}
+      title={connection.name}
+      icon={getIcon(connection)}
+      actions={
+        <ActionPanel>
+          <Action
+            title={getTitle(connection)}
+            onAction={() => handleSelect(connection)}
+          />
+        </ActionPanel>
+      }
+    />
+  )
+
   return (
-    <List>
-      {connections.map((connection, index) => (
-        <List.Item
-          key={index}
-          title={connection.name}
-          icon={getIcon(connection)}
-          actions={
-            <ActionPanel>
-              <Action
-                title={getTitle(connection)}
-                onAction={() => handleSelect(connection)}
-              />
-            </ActionPanel>
-          }
-        />
-      ))}
+    <List
+      selectedItemId={selectedId || undefined}
+      onSelectionChange={setSelectedId}
+      filtering={{ keepSectionOrder: true }}
+    >
+      <List.Section title="Active">
+        {activeConnections.map(renderConnection)}
+      </List.Section>
+      <List.Section title="Disconnected">
+        {disconnectedConnections.map(renderConnection)}
+      </List.Section>
     </List>
   )
 }
