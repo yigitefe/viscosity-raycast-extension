@@ -9,8 +9,26 @@ const stateChangeTimeout = 3000
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
 
+  const compareConnections = (a: Connection, b: Connection) => {
+    const priority = {
+      [ConnectionState.Connected]: 0,
+      [ConnectionState.Changing]: 0,
+      [ConnectionState.Disconnected]: 2,
+    }
+
+    const stateA = priority[a.state] ?? 2
+    const stateB = priority[b.state] ?? 2
+
+    if (stateA !== stateB) {
+      return stateA - stateB
+    }
+
+    return a.name.localeCompare(b.name)
+  }
+
   const fetchConnections = async () => {
     const connectionNames = await getConnectionNames()
+    connectionNames.sort(compareConnections)
     setConnections(connectionNames)
     return connectionNames
   }
@@ -67,7 +85,9 @@ export default function Command() {
     state: ConnectionState,
   ) => {
     setConnections(
-      connections.map((c) => (c === selectedConnection ? { ...c, state } : c)),
+      connections
+        .map((c) => (c === selectedConnection ? { ...c, state } : c))
+        .sort(compareConnections),
     )
   }
 
