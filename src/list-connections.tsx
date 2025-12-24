@@ -119,6 +119,14 @@ export default function Command() {
     (c) => c.state === ConnectionState.Disconnected,
   )
 
+  const RefreshAction = () => (
+    <Action
+      title="Refresh"
+      onAction={() => fetchConnections()}
+      shortcut={{ modifiers: ["cmd"], key: "r" }}
+    />
+  )
+
   const renderConnection = (connection: Connection) => (
     <List.Item
       key={connection.name}
@@ -131,6 +139,7 @@ export default function Command() {
             title={getTitle(connection)}
             onAction={() => handleSelect(connection)}
           />
+          <RefreshAction />
         </ActionPanel>
       }
     />
@@ -141,6 +150,11 @@ export default function Command() {
       selectedItemId={selectedId || undefined}
       onSelectionChange={setSelectedId}
       filtering={{ keepSectionOrder: true }}
+      actions={
+        <ActionPanel>
+          <RefreshAction />
+        </ActionPanel>
+      }
     >
       <List.Section title="Active">
         {activeConnections.map(renderConnection)}
