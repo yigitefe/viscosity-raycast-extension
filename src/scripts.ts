@@ -33,6 +33,37 @@ export const getConnectionNames = async (): Promise<Connection[]> => {
   }
 }
 
+export const getConnectionState = async (
+  name: string,
+): Promise<ConnectionState | null> => {
+  try {
+    const state = await runAppleScript(`
+      tell application "Viscosity"
+        set connectionCount to count of connections
+        set connectionState to ""
+
+        repeat with i from 1 to connectionCount
+          set connectionName to name of connection i
+          if connectionName is "${name}" then
+            set connectionState to state of connection i
+            exit repeat
+          end if
+        end repeat
+
+        return connectionState
+      end tell
+    `)
+    return state as ConnectionState
+  } catch (e) {
+    console.error(e)
+    await showToast({
+      style: Toast.Style.Failure,
+      title: ErrorMessages.Generic,
+    })
+    return null
+  }
+}
+
 export const connect = async (name: string): Promise<void> => {
   try {
     await runAppleScript(`

@@ -1,10 +1,13 @@
 import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useEffect, useState } from "react"
 import { Connection, ConnectionState } from "./types"
-import { connect, disconnect, getConnectionNames } from "./scripts"
+import {
+  connect,
+  disconnect,
+  getConnectionNames,
+  getConnectionState,
+} from "./scripts"
 import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
-
-const stateChangeTimeout = 3000
 
 export default function Command() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -38,35 +41,55 @@ export default function Command() {
     fetchConnections()
   }, [])
 
+  const isConnectionActive = (connection: Connection) =>
+    connection.state === ConnectionState.Connected
+
+  const setConnectionState = (
+    selectedConnection: Connection,
+    state: ConnectionState,
+  ) => {
+    setConnections((prev) =>
+      prev
+        .map((c) => (c.name === selectedConnection.name ? { ...c, state } : c))
+        .sort(compareConnections),
+    )
+    setTimeout(() => setSelectedId(selectedConnection.name), 50)
+  }
+
   const handleSelect = async (selectedConnection: Connection) => {
+    const isActive = isConnectionActive(selectedConnection)
+    const actionMessage = isActive
+      ? StateMessages.Disconnecting
+      : StateMessages.Connecting
+
     try {
-      const targetState = getOppositeConnectionState(selectedConnection)
       const toast = await showToast({
         style: Toast.Style.Animated,
-        title:
-          targetState === ConnectionState.Connected
-            ? StateMessages.Connecting
-            : StateMessages.Disconnecting,
+        title: actionMessage,
       })
       setConnectionState(selectedConnection, ConnectionState.Changing)
 
-      if (isConnectionActive(selectedConnection))
-        await disconnect(selectedConnection.name)
-      else await connect(selectedConnection.name)
+      isActive
+        ? await disconnect(selectedConnection.name)
+        : await connect(selectedConnection.name)
 
-      setTimeout(async () => {
-        const connections = await fetchConnections()
-        const connection = connections.find(
-          (c) => c.name === selectedConnection.name,
-        )
-        if (connection && isConnectionActive(connection)) {
-          toast.style = Toast.Style.Success
-          toast.title = StateMessages.Connected
-        } else {
-          toast.style = Toast.Style.Success
-          toast.title = StateMessages.Disconnected
-        }
-      }, stateChangeTimeout)
+      const finalState = await pollConnectionState(
+        selectedConnection.name,
+        isActive ? ConnectionState.Disconnected : ConnectionState.Connected,
+      )
+
+      if (finalState) {
+        // When the "Reset network interfaces on disconnect" preference is enabled in Viscosity, all
+        // connections are disconnected after the network interface is reset. For that reason we
+        // fetch all the connections again to get the correct state for all connections.
+        await fetchConnections()
+
+        toast.style = Toast.Style.Success
+        toast.title =
+          finalState === ConnectionState.Connected
+            ? StateMessages.Connected
+            : StateMessages.Disconnected
+      }
     } catch (e) {
       console.error(e)
       await showToast({
@@ -76,24 +99,20 @@ export default function Command() {
     }
   }
 
-  const getOppositeConnectionState = (connection: Connection) =>
-    isConnectionActive(connection)
-      ? ConnectionState.Disconnected
-      : ConnectionState.Connected
+  const pollConnectionState = async (
+    name: string,
+    targetState: ConnectionState,
+  ): Promise<ConnectionState | null> => {
+    for (let attempts = 0; attempts < 30; attempts++) {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const currentState = await getConnectionState(name)
 
-  const setConnectionState = (
-    selectedConnection: Connection,
-    state: ConnectionState,
-  ) => {
-    const connectionNames = connections
-      .map((c) => (c === selectedConnection ? { ...c, state } : c))
-      .sort(compareConnections)
-    setConnections(connectionNames)
-    setTimeout(() => setSelectedId(selectedConnection.name), 50)
+      if (currentState === targetState) {
+        return currentState
+      }
+    }
+    return null
   }
-
-  const isConnectionActive = (connection: Connection) =>
-    connection.state === ConnectionState.Connected
 
   const getIcon = (connection: Connection) => {
     switch (connection.state) {
