@@ -16,13 +16,13 @@
     {
       "name": "list-connections",
       "title": "List Connections",
-      "description": "Browse your VPN connections and quickly connect to one.",
+      "description": "Browse your VPN connections.",
       "mode": "view"
     },
     {
       "name": "disconnect-all",
       "title": "Disconnect All",
-      "description": "Ends all currently connected VPN sessions.",
+      "description": "Ends all currently active VPN sessions.",
       "mode": "no-view"
     }
   ],
