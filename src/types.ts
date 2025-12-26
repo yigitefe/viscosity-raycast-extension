@@ -8,5 +8,5 @@ export enum ConnectionState {
 export type Connection = {
   name: string
   state: ConnectionState
-  isFavorite?: boolean
+  isQuickConnect?: boolean
 }

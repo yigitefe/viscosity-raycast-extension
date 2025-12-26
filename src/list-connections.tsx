@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { connect, disconnect, getConnectionState } from "./scripts"
 import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
-import { toggleFavorite } from "./utils"
+import { toggleQuickConnect } from "./utils"
 import { useConnections } from "./useConnections"
 
 export default function Command() {
@@ -79,8 +79,8 @@ export default function Command() {
     return null
   }
 
-  const makeFavorite = async (connection: Connection) => {
-    await toggleFavorite(connection.name)
+  const toggleConnectionAsQuickConnect = async (connection: Connection) => {
+    await toggleQuickConnect(connection.name)
     await loadConnections()
   }
 
@@ -120,7 +120,8 @@ export default function Command() {
     <List.Item
       key={connection.name}
       id={connection.name}
-      title={`${connection.isFavorite ? "⭐" : ""} ${connection.name}`}
+      title={connection.name}
+      subtitle={`${connection.isQuickConnect ? "⚡" : ""}`}
       icon={getIcon(connection)}
       actions={
         <ActionPanel>
@@ -129,9 +130,9 @@ export default function Command() {
             onAction={() => handleSelect(connection)}
           />
           <Action
-            title="Make Favorite"
-            onAction={() => makeFavorite(connection)}
-            shortcut={{ modifiers: ["cmd"], key: "f" }}
+            title="Toggle Quick Connect"
+            onAction={() => toggleConnectionAsQuickConnect(connection)}
+            shortcut={{ modifiers: ["shift", "cmd"], key: "q" }}
           />
           <RefreshAction />
         </ActionPanel>
