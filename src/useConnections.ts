@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { getConnectionNames } from "./scripts"
+import { getFavorite } from "./utils"
 
 export function useConnections() {
   const [connections, setConnections] = useState<Connection[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const compareConnections = (a: Connection, b: Connection) => {
+    if (a.isFavorite && !b.isFavorite) return -1
+    if (!a.isFavorite && b.isFavorite) return 1
+
     const priority = {
       [ConnectionState.Connected]: 0,
       [ConnectionState.Changing]: 0,
@@ -26,9 +30,18 @@ export function useConnections() {
   const loadConnections = useCallback(async () => {
     setIsLoading(true)
     try {
-      const connectionNames = await getConnectionNames()
-      connectionNames.sort(compareConnections)
-      setConnections(connectionNames)
+      const [connectionNames, favoriteConnection] = await Promise.all([
+        getConnectionNames(),
+        getFavorite(),
+      ])
+      setConnections(
+        connectionNames
+          .map((c) => ({
+            ...c,
+            isFavorite: c.name === favoriteConnection,
+          }))
+          .sort(compareConnections),
+      )
     } finally {
       setIsLoading(false)
     }

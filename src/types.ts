@@ -5,4 +5,8 @@ export enum ConnectionState {
   Disconnected = "Disconnected",
 }
 
-export type Connection = { name: string; state: ConnectionState }
+export type Connection = {
+  name: string
+  state: ConnectionState
+  isFavorite?: boolean
+}

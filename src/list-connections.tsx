@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { connect, disconnect, getConnectionState } from "./scripts"
 import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
+import { toggleFavorite } from "./utils"
 import { useConnections } from "./useConnections"
 
 export default function Command() {
@@ -78,6 +79,11 @@ export default function Command() {
     return null
   }
 
+  const makeFavorite = async (connection: Connection) => {
+    await toggleFavorite(connection.name)
+    await loadConnections()
+  }
+
   const getIcon = (connection: Connection) => {
     switch (connection.state) {
       case ConnectionState.Connected:
@@ -89,7 +95,7 @@ export default function Command() {
     }
   }
 
-  const getTitle = (connection: Connection) => {
+  const getActionTitle = (connection: Connection) => {
     return isConnectionActive(connection)
       ? ActionTitles.Disconnect
       : ActionTitles.Connect
@@ -114,13 +120,18 @@ export default function Command() {
     <List.Item
       key={connection.name}
       id={connection.name}
-      title={connection.name}
+      title={`${connection.isFavorite ? "⭐" : ""} ${connection.name}`}
       icon={getIcon(connection)}
       actions={
         <ActionPanel>
           <Action
-            title={getTitle(connection)}
+            title={getActionTitle(connection)}
             onAction={() => handleSelect(connection)}
+          />
+          <Action
+            title="Make Favorite"
+            onAction={() => makeFavorite(connection)}
+            shortcut={{ modifiers: ["cmd"], key: "f" }}
           />
           <RefreshAction />
         </ActionPanel>
