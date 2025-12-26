@@ -1,45 +1,14 @@
 import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Connection, ConnectionState } from "./types"
-import {
-  connect,
-  disconnect,
-  getConnectionNames,
-  getConnectionState,
-} from "./scripts"
+import { connect, disconnect, getConnectionState } from "./scripts"
 import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
+import { useConnections } from "./useConnections"
 
 export default function Command() {
-  const [connections, setConnections] = useState<Connection[]>([])
+  const { connections, isLoading, loadConnections, updateConnectionState } =
+    useConnections()
   const [selectedId, setSelectedId] = useState<string | null>(null)
-
-  const compareConnections = (a: Connection, b: Connection) => {
-    const priority = {
-      [ConnectionState.Connected]: 0,
-      [ConnectionState.Changing]: 0,
-      [ConnectionState.Disconnected]: 1,
-    }
-
-    const stateA = priority[a.state] ?? 1
-    const stateB = priority[b.state] ?? 1
-
-    if (stateA !== stateB) {
-      return stateA - stateB
-    }
-
-    return a.name.localeCompare(b.name)
-  }
-
-  const fetchConnections = async () => {
-    const connectionNames = await getConnectionNames()
-    connectionNames.sort(compareConnections)
-    setConnections(connectionNames)
-    return connectionNames
-  }
-
-  useEffect(() => {
-    fetchConnections()
-  }, [])
 
   const isConnectionActive = (connection: Connection) =>
     connection.state === ConnectionState.Connected
@@ -48,11 +17,7 @@ export default function Command() {
     selectedConnection: Connection,
     state: ConnectionState,
   ) => {
-    setConnections((prev) =>
-      prev
-        .map((c) => (c.name === selectedConnection.name ? { ...c, state } : c))
-        .sort(compareConnections),
-    )
+    updateConnectionState(selectedConnection, state)
     setTimeout(() => setSelectedId(selectedConnection.name), 50)
   }
 
@@ -81,7 +46,7 @@ export default function Command() {
         // When the "Reset network interfaces on disconnect" preference is enabled in Viscosity, all
         // connections are disconnected after the network interface is reset. For that reason we
         // fetch all the connections again to get the correct state for all connections.
-        await fetchConnections()
+        await loadConnections()
 
         toast.style = Toast.Style.Success
         toast.title =
@@ -140,7 +105,7 @@ export default function Command() {
   const RefreshAction = () => (
     <Action
       title="Refresh"
-      onAction={() => fetchConnections()}
+      onAction={loadConnections}
       shortcut={{ modifiers: ["cmd"], key: "r" }}
     />
   )
@@ -165,6 +130,7 @@ export default function Command() {
 
   return (
     <List
+      isLoading={isLoading}
       selectedItemId={selectedId || undefined}
       onSelectionChange={setSelectedId}
       filtering={{ keepSectionOrder: true }}
