@@ -1,9 +1,9 @@
 import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "./types"
-import { connect, disconnect, getConnectionState } from "./scripts"
+import { connect, disconnect } from "./scripts"
 import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
-import { toggleQuickConnect } from "./utils"
+import { pollConnectionState, toggleQuickConnect } from "./utils"
 import { useConnections } from "./useConnections"
 
 export default function Command() {
@@ -62,21 +62,6 @@ export default function Command() {
         title: ErrorMessages.Generic,
       })
     }
-  }
-
-  const pollConnectionState = async (
-    name: string,
-    targetState: ConnectionState,
-  ): Promise<ConnectionState | null> => {
-    for (let attempts = 0; attempts < 30; attempts++) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      const currentState = await getConnectionState(name)
-
-      if (currentState === targetState) {
-        return currentState
-      }
-    }
-    return null
   }
 
   const toggleConnectionAsQuickConnect = async (connection: Connection) => {

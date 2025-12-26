@@ -1,0 +1,42 @@
+import { showToast, Toast } from "@raycast/api"
+import { ConnectionState } from "./types"
+import { ErrorMessages, StateMessages } from "./constants"
+import { connect, getPrimaryConnection } from "./scripts"
+import { pollConnectionState } from "./utils"
+
+export default async function main() {
+  const primaryConnection = await getPrimaryConnection()
+
+  if (!primaryConnection) {
+    await showToast({
+      style: Toast.Style.Failure,
+      title: "No connections found",
+    })
+    return
+  }
+
+  try {
+    const toast = await showToast({
+      style: Toast.Style.Animated,
+      title: StateMessages.Connecting,
+    })
+
+    await connect(primaryConnection.name)
+
+    const finalState = await pollConnectionState(
+      primaryConnection.name,
+      ConnectionState.Connected,
+    )
+
+    if (finalState) {
+      toast.style = Toast.Style.Success
+      toast.title = `${StateMessages.Connected} to "${primaryConnection.name}"`
+    }
+  } catch (e) {
+    console.error(e)
+    await showToast({
+      style: Toast.Style.Failure,
+      title: ErrorMessages.Generic,
+    })
+  }
+}

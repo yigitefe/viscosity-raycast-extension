@@ -2,6 +2,7 @@ import { showToast, Toast } from "@raycast/api"
 import { runAppleScript } from "@raycast/utils"
 import { Connection, ConnectionState } from "./types"
 import { ErrorMessages } from "./constants"
+import { compareConnections, getQuickConnect } from "./utils"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
   try {
@@ -90,4 +91,23 @@ export const disconnect = async (name: string): Promise<void> => {
       title: ErrorMessages.Generic,
     })
   }
+}
+
+export async function getSortedConnections(): Promise<Connection[]> {
+  const [connectionNames, quickConnect] = await Promise.all([
+    getConnectionNames(),
+    getQuickConnect(),
+  ])
+
+  return connectionNames
+    .map((c) => ({
+      ...c,
+      isQuickConnect: c.name === quickConnect,
+    }))
+    .sort(compareConnections)
+}
+
+export async function getPrimaryConnection(): Promise<Connection | undefined> {
+  const sortedConnections = await getSortedConnections()
+  return sortedConnections[0]
 }
