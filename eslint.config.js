@@ -1,10 +1,4 @@
-import raycastConfig from "@raycast/eslint-config"
+const { defineConfig } = require("eslint/config")
+const raycastConfig = require("@raycast/eslint-config")
 
-export default [
-  ...raycastConfig,
-  {
-    rules: {
-      "@typescript-eslint/no-unused-expressions": "off",
-    },
-  },
-].flat()
+module.exports = defineConfig([...raycastConfig])

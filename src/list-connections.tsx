@@ -69,9 +69,8 @@ export default function Command() {
       })
       setConnectionState(selectedConnection, ConnectionState.Changing)
 
-      isActive
-        ? await disconnect(selectedConnection.name)
-        : await connect(selectedConnection.name)
+      if (isActive) await disconnect(selectedConnection.name)
+      else await connect(selectedConnection.name)
 
       const finalState = await pollConnectionState(
         selectedConnection.name,

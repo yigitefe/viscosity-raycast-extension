@@ -5,13 +5,8 @@
   "description": "Easily list, connect, and disconnect your VPN connections configured in Viscosity, all from within Raycast.",
   "icon": "extension-icon.png",
   "author": "yigitefe",
-  "categories": [
-    "Applications",
-    "Security",
-    "System"
-  ],
+  "categories": ["Applications", "Security", "System"],
   "license": "MIT",
-  "type": "module",
   "commands": [
     {
       "name": "list-connections",
