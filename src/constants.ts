@@ -15,7 +15,7 @@ export const ActionTitles = {
 } as const
 
 export const Icons = {
-  Connected: "🟢",
-  Disconnected: "🔴",
-  Changing: "🟡",
+  Connected: "connected.png",
+  Disconnected: "disconnected.png",
+  Changing: "loading.png",
 } as const

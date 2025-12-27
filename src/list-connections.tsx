@@ -102,8 +102,12 @@ export default function Command() {
       key={connection.name}
       id={connection.name}
       title={connection.name}
-      subtitle={`${connection.isQuickConnect ? "⚡" : ""}`}
-      icon={getIcon(connection)}
+      icon={{ source: getIcon(connection) }}
+      accessories={
+        connection.isQuickConnect
+          ? [{ icon: "quick-connect.png", tooltip: "Quick Connect" }]
+          : []
+      }
       actions={
         <ActionPanel>
           <Action
