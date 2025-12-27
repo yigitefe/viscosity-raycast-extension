@@ -1,6 +1,6 @@
 import { LocalStorage } from "@raycast/api"
 import { Connection, ConnectionState } from "./types"
-import { getConnectionState } from "./scripts"
+import { getConnectionState, getConnectionNames } from "./scripts"
 
 const QUICK_CONNECT_KEY = "quick-connect"
 
@@ -32,6 +32,21 @@ export const pollConnectionState = async (
     }
   }
   return null
+}
+
+export const pollAllDisconnected = async (): Promise<boolean> => {
+  for (let attempts = 0; attempts < 30; attempts++) {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const connections = await getConnectionNames()
+    const allDisconnected = connections.every(
+      (c) => c.state === ConnectionState.Disconnected,
+    )
+
+    if (allDisconnected) {
+      return true
+    }
+  }
+  return false
 }
 
 export const compareConnections = (a: Connection, b: Connection) => {
