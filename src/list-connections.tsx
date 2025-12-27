@@ -2,7 +2,7 @@ import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "./types"
 import { connect, disconnect } from "./scripts"
-import { ActionTitles, ErrorMessages, Icons, StateMessages } from "./constants"
+import { ActionTitles, Icons, StateMessages } from "./constants"
 import { pollConnectionState, toggleQuickConnect } from "./utils"
 import { useConnections } from "./useConnections"
 
@@ -57,10 +57,6 @@ export default function Command() {
       }
     } catch (e) {
       console.error(e)
-      await showToast({
-        style: Toast.Style.Failure,
-        title: ErrorMessages.Generic,
-      })
     }
   }
 

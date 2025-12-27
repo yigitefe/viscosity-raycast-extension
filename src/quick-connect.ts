@@ -1,6 +1,6 @@
 import { showToast, Toast } from "@raycast/api"
 import { ConnectionState } from "./types"
-import { ErrorMessages, StateMessages } from "./constants"
+import { StateMessages } from "./constants"
 import { connect, getPrimaryConnection } from "./scripts"
 import { pollConnectionState } from "./utils"
 
@@ -34,9 +34,5 @@ export default async function main() {
     }
   } catch (e) {
     console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: ErrorMessages.Generic,
-    })
   }
 }

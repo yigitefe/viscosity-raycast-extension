@@ -93,6 +93,18 @@ export const disconnect = async (name: string): Promise<void> => {
   }
 }
 
+export const disconnectAll = async (): Promise<void> => {
+  try {
+    await runAppleScript('tell application "Viscosity" to disconnectall')
+  } catch (e) {
+    console.error(e)
+    await showToast({
+      style: Toast.Style.Failure,
+      title: ErrorMessages.Generic,
+    })
+  }
+}
+
 export async function getSortedConnections(): Promise<Connection[]> {
   const [connectionNames, quickConnect] = await Promise.all([
     getConnectionNames(),
