@@ -105,7 +105,12 @@ export default function Command() {
       icon={{ source: getIcon(connection) }}
       accessories={
         connection.isQuickConnect
-          ? [{ icon: "quick-connect.png", tooltip: "Quick Connect" }]
+          ? [
+              {
+                icon: "quick-connect.png",
+                tooltip: "Quick Connect",
+              },
+            ]
           : []
       }
       actions={
