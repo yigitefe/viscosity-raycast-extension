@@ -2,11 +2,12 @@ import { showToast, Toast } from "@raycast/api"
 import { runAppleScript } from "@raycast/utils"
 import { Connection, ConnectionState } from "./types"
 import { ErrorMessages } from "./constants"
-import { compareConnections, getQuickConnect } from "./utils"
+import { compareConnections, getQuickConnect, escape } from "./utils"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
   try {
     const connectionNames: string = await runAppleScript(`
+      set AppleScript's text item delimiters to "\n"
       tell application "Viscosity"
         set connectionCount to count of connections
         set resultList to {}
@@ -17,10 +18,10 @@ export const getConnectionNames = async (): Promise<Connection[]> => {
           set end of resultList to connectionName & "||" & connectionState
         end repeat
 
-        return resultList
+        return resultList as string
       end tell
     `)
-    return connectionNames.split(",").map((cn) => {
+    return connectionNames.split("\n").map((cn) => {
       const [name, state] = cn.trim().split("||")
       return { name, state: state as ConnectionState }
     })
@@ -45,7 +46,7 @@ export const getConnectionState = async (
 
         repeat with i from 1 to connectionCount
           set connectionName to name of connection i
-          if connectionName is "${name}" then
+          if connectionName is "${escape(name)}" then
             set connectionState to state of connection i
             exit repeat
           end if
@@ -69,7 +70,7 @@ export const connect = async (name: string): Promise<void> => {
   try {
     await runAppleScript(`
       tell application "Viscosity"
-        connect "${name}"
+        connect "${escape(name)}"
       end tell
     `)
   } catch (e) {
@@ -83,7 +84,9 @@ export const connect = async (name: string): Promise<void> => {
 
 export const disconnect = async (name: string): Promise<void> => {
   try {
-    await runAppleScript(`tell application "Viscosity" to disconnect "${name}"`)
+    await runAppleScript(
+      `tell application "Viscosity" to disconnect "${escape(name)}"`,
+    )
   } catch (e) {
     console.error(e)
     await showToast({

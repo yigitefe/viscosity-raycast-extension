@@ -68,3 +68,7 @@ export const compareConnections = (a: Connection, b: Connection) => {
 
   return a.name.localeCompare(b.name)
 }
+
+export const escape = (str: string) => {
+  return str.replace(/\\/g, "\\\\")
+}
