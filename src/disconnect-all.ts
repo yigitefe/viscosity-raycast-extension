@@ -1,5 +1,5 @@
 import { showToast, Toast } from "@raycast/api"
-import { Message } from "@/constants"
+import { Message, Error } from "@/constants"
 import { disconnectAll } from "@/scripts"
 import { pollAllDisconnected } from "@/utils"
 
@@ -20,5 +20,9 @@ export default async function main() {
     }
   } catch (e) {
     console.error(e)
+    await showToast({
+      style: Toast.Style.Failure,
+      title: Error.Generic,
+    })
   }
 }

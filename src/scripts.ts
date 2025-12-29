@@ -1,72 +1,29 @@
-import { showToast, Toast } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
-import { Error, StorageKeys } from "@/constants"
+import { StorageKeys } from "@/constants"
 import { compareConnections } from "@/utils"
 import { getStorageValue } from "@/api/storage"
 import { ViscosityClient } from "@/api/viscosity"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
-  try {
-    return await ViscosityClient.getConnectionNames()
-  } catch (e) {
-    console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: Error.Generic,
-    })
-    return []
-  }
+  return await ViscosityClient.getConnectionNames()
 }
 
 export const getConnectionState = async (
   name: string,
 ): Promise<ConnectionState | null> => {
-  try {
-    return await ViscosityClient.getConnectionState(name)
-  } catch (e) {
-    console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: Error.Generic,
-    })
-    return null
-  }
+  return await ViscosityClient.getConnectionState(name)
 }
 
 export const connect = async (name: string): Promise<void> => {
-  try {
-    await ViscosityClient.connect(name)
-  } catch (e) {
-    console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: Error.Generic,
-    })
-  }
+  await ViscosityClient.connect(name)
 }
 
 export const disconnect = async (name: string): Promise<void> => {
-  try {
-    await ViscosityClient.disconnect(name)
-  } catch (e) {
-    console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: Error.Generic,
-    })
-  }
+  await ViscosityClient.disconnect(name)
 }
 
 export const disconnectAll = async (): Promise<void> => {
-  try {
-    await ViscosityClient.disconnectAll()
-  } catch (e) {
-    console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: Error.Generic,
-    })
-  }
+  await ViscosityClient.disconnectAll()
 }
 
 export async function getSortedConnections(): Promise<Connection[]> {

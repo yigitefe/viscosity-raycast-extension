@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
+import { showToast, Toast } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
 import { getSortedConnections } from "@/scripts"
 import { compareConnections } from "@/utils"
+import { Error } from "@/constants"
 
 export function useConnections() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -12,6 +14,12 @@ export function useConnections() {
     try {
       const sortedConnections = await getSortedConnections()
       setConnections(sortedConnections)
+    } catch (e) {
+      console.error(e)
+      await showToast({
+        style: Toast.Style.Failure,
+        title: Error.Generic,
+      })
     } finally {
       setIsLoading(false)
     }

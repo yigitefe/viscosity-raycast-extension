@@ -66,12 +66,24 @@ export default function Command() {
       }
     } catch (e) {
       console.error(e)
+      await showToast({
+        style: Toast.Style.Failure,
+        title: Error.Generic,
+      })
     }
   }
 
   const makeQuickConnect = async (connection: Connection) => {
-    await setQuickConnect(connection.name)
-    await loadConnections()
+    try {
+      await setQuickConnect(connection.name)
+      await loadConnections()
+    } catch (e) {
+      console.error(e)
+      await showToast({
+        style: Toast.Style.Failure,
+        title: Error.Generic,
+      })
+    }
   }
 
   const getIcon = (connection: Connection) => {
