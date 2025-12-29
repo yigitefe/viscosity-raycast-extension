@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
-import { Connection, ConnectionState } from "./types"
-import { getSortedConnections } from "./scripts"
-import { compareConnections } from "./utils"
+import { Connection, ConnectionState } from "@/types"
+import { getSortedConnections } from "@/scripts"
+import { compareConnections } from "@/utils"
 
 export function useConnections() {
   const [connections, setConnections] = useState<Connection[]>([])

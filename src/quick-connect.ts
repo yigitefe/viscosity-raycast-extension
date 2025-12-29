@@ -1,8 +1,8 @@
 import { showToast, Toast } from "@raycast/api"
-import { ConnectionState } from "./types"
-import { Message } from "./constants"
-import { connect, getPrimaryConnection } from "./scripts"
-import { pollConnectionState } from "./utils"
+import { ConnectionState } from "@/types"
+import { Message } from "@/constants"
+import { connect, getPrimaryConnection } from "@/scripts"
+import { pollConnectionState } from "@/utils"
 
 export default async function main() {
   const primaryConnection = await getPrimaryConnection()

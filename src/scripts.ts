@@ -1,8 +1,9 @@
 import { showToast, Toast } from "@raycast/api"
-import { Connection, ConnectionState } from "./types"
-import { Error, StorageKeys } from "./constants"
-import { compareConnections, getStorageValue } from "./utils"
-import { ViscosityClient } from "./api/viscosity"
+import { Connection, ConnectionState } from "@/types"
+import { Error, StorageKeys } from "@/constants"
+import { compareConnections } from "@/utils"
+import { getStorageValue } from "@/api/storage"
+import { ViscosityClient } from "@/api/viscosity"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
   try {

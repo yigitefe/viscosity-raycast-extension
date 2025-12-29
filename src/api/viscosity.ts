@@ -1,6 +1,6 @@
 import { runAppleScript } from "@raycast/utils"
-import { Connection, ConnectionState } from "../types"
-import { escape } from "../utils"
+import { Connection, ConnectionState } from "@/types"
+import { escape } from "@/utils"
 
 export class ViscosityClient {
   private static async run(script: string): Promise<string> {

@@ -1,7 +1,7 @@
 import { showToast, Toast } from "@raycast/api"
-import { Message } from "./constants"
-import { disconnectAll } from "./scripts"
-import { pollAllDisconnected } from "./utils"
+import { Message } from "@/constants"
+import { disconnectAll } from "@/scripts"
+import { pollAllDisconnected } from "@/utils"
 
 export default async function main() {
   try {

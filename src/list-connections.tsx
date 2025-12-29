@@ -1,7 +1,7 @@
 import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
-import { Connection, ConnectionState } from "./types"
-import { connect, disconnect } from "./scripts"
+import { Connection, ConnectionState } from "@/types"
+import { connect, disconnect } from "@/scripts"
 import {
   ActionTitle,
   Error,
@@ -9,9 +9,10 @@ import {
   Message,
   SectionTitle,
   Tooltip,
-} from "./constants"
-import { pollConnectionState, setQuickConnect } from "./utils"
-import { useConnections } from "./useConnections"
+} from "@/constants"
+import { pollConnectionState } from "@/utils"
+import { setQuickConnect } from "@/api/storage"
+import { useConnections } from "@/useConnections"
 
 export default function Command() {
   const { connections, isLoading, loadConnections, updateConnectionState } =
