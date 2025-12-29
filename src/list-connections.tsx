@@ -87,11 +87,13 @@ export default function Command() {
     (c) => c.state === ConnectionState.Disconnected,
   )
 
-  const RefreshAction = () => (
-    <Action
-      title={ActionTitle.Refresh}
-      onAction={loadConnections}
-      shortcut={{ modifiers: ["cmd"], key: "r" }}
+  const renderConnection = (connection: Connection) => (
+    <ConnectionListItem
+      key={connection.name}
+      connection={connection}
+      onSelect={handleSelect}
+      onQuickConnect={makeQuickConnect}
+      onRefresh={loadConnections}
     />
   )
 
@@ -103,31 +105,19 @@ export default function Command() {
       filtering={{ keepSectionOrder: true }}
       actions={
         <ActionPanel>
-          <RefreshAction />
+          <Action
+            title={ActionTitle.Refresh}
+            onAction={loadConnections}
+            shortcut={{ modifiers: ["cmd"], key: "r" }}
+          />
         </ActionPanel>
       }
     >
       <List.Section title={SectionTitle.Active}>
-        {activeConnections.map((connection) => (
-          <ConnectionListItem
-            key={connection.name}
-            connection={connection}
-            onSelect={handleSelect}
-            onQuickConnect={makeQuickConnect}
-            onRefresh={loadConnections}
-          />
-        ))}
+        {activeConnections.map(renderConnection)}
       </List.Section>
       <List.Section title={SectionTitle.Disconnected}>
-        {disconnectedConnections.map((connection) => (
-          <ConnectionListItem
-            key={connection.name}
-            connection={connection}
-            onSelect={handleSelect}
-            onQuickConnect={makeQuickConnect}
-            onRefresh={loadConnections}
-          />
-        ))}
+        {disconnectedConnections.map(renderConnection)}
       </List.Section>
     </List>
   )
