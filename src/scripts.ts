@@ -1,8 +1,8 @@
 import { showToast, Toast } from "@raycast/api"
 import { runAppleScript } from "@raycast/utils"
 import { Connection, ConnectionState } from "./types"
-import { ErrorMessages } from "./constants"
-import { compareConnections, getQuickConnect, escape } from "./utils"
+import { Error, StorageKeys } from "./constants"
+import { compareConnections, getStorageValue, escape } from "./utils"
 
 export const getConnectionNames = async (): Promise<Connection[]> => {
   try {
@@ -29,7 +29,7 @@ export const getConnectionNames = async (): Promise<Connection[]> => {
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: ErrorMessages.Generic,
+      title: Error.Generic,
     })
     return []
   }
@@ -60,7 +60,7 @@ export const getConnectionState = async (
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: ErrorMessages.Generic,
+      title: Error.Generic,
     })
     return null
   }
@@ -77,7 +77,7 @@ export const connect = async (name: string): Promise<void> => {
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: ErrorMessages.Generic,
+      title: Error.Generic,
     })
   }
 }
@@ -91,7 +91,7 @@ export const disconnect = async (name: string): Promise<void> => {
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: ErrorMessages.Generic,
+      title: Error.Generic,
     })
   }
 }
@@ -103,7 +103,7 @@ export const disconnectAll = async (): Promise<void> => {
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: ErrorMessages.Generic,
+      title: Error.Generic,
     })
   }
 }
@@ -111,7 +111,7 @@ export const disconnectAll = async (): Promise<void> => {
 export async function getSortedConnections(): Promise<Connection[]> {
   const [connectionNames, quickConnect] = await Promise.all([
     getConnectionNames(),
-    getQuickConnect(),
+    getStorageValue(StorageKeys.QuickConnect),
   ])
 
   return connectionNames

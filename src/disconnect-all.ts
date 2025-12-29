@@ -1,5 +1,5 @@
 import { showToast, Toast } from "@raycast/api"
-import { StateMessages } from "./constants"
+import { Message } from "./constants"
 import { disconnectAll } from "./scripts"
 import { pollAllDisconnected } from "./utils"
 
@@ -7,7 +7,7 @@ export default async function main() {
   try {
     const toast = await showToast({
       style: Toast.Style.Animated,
-      title: StateMessages.Disconnecting,
+      title: Message.Disconnecting,
     })
 
     await disconnectAll()
@@ -16,7 +16,7 @@ export default async function main() {
 
     if (finalState) {
       toast.style = Toast.Style.Success
-      toast.title = StateMessages.Disconnected
+      toast.title = Message.Disconnected
     }
   } catch (e) {
     console.error(e)

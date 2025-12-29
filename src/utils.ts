@@ -1,21 +1,20 @@
 import { LocalStorage } from "@raycast/api"
 import { Connection, ConnectionState } from "./types"
 import { getConnectionState, getConnectionNames } from "./scripts"
+import { StorageKeys } from "./constants"
 
-const QUICK_CONNECT_KEY = "quick-connect"
+export async function getStorageValue(key: string): Promise<string> {
+  return (await LocalStorage.getItem<string>(key)) ?? ""
+}
 
-export async function getQuickConnect(): Promise<string> {
-  return (await LocalStorage.getItem<string>(QUICK_CONNECT_KEY)) ?? ""
+export async function setStorageValue(key: string, value: string) {
+  await LocalStorage.setItem(key, value)
 }
 
 export async function setQuickConnect(name: string) {
-  await LocalStorage.setItem(QUICK_CONNECT_KEY, name)
-}
-
-export async function toggleQuickConnect(name: string) {
-  const qc = await getQuickConnect()
+  const qc = await getStorageValue(StorageKeys.QuickConnect)
   const newQC = qc === name ? "" : name
-  await setQuickConnect(newQC)
+  await setStorageValue(StorageKeys.QuickConnect, newQC)
   return newQC
 }
 
