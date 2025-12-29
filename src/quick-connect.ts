@@ -1,11 +1,11 @@
 import { showToast, Toast } from "@raycast/api"
 import { ConnectionState } from "@/types"
 import { Message, Error } from "@/constants"
-import { connect, getPrimaryConnection } from "@/scripts"
+import { ConnectionService } from "@/services/connection"
 import { pollConnectionState } from "@/utils"
 
 export default async function main() {
-  const primaryConnection = await getPrimaryConnection()
+  const primaryConnection = await ConnectionService.getPrimaryConnection()
 
   if (!primaryConnection) {
     await showToast({
@@ -21,7 +21,7 @@ export default async function main() {
       title: Message.Connecting,
     })
 
-    await connect(primaryConnection.name)
+    await ConnectionService.connect(primaryConnection.name)
 
     const finalState = await pollConnectionState(
       primaryConnection.name,

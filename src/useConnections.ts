@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { showToast, Toast } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
-import { getSortedConnections } from "@/scripts"
+import { ConnectionService } from "@/services/connection"
 import { compareConnections } from "@/utils"
 import { Error } from "@/constants"
 
@@ -12,7 +12,7 @@ export function useConnections() {
   const loadConnections = useCallback(async () => {
     setIsLoading(true)
     try {
-      const sortedConnections = await getSortedConnections()
+      const sortedConnections = await ConnectionService.getSortedConnections()
       setConnections(sortedConnections)
     } catch (e) {
       console.error(e)

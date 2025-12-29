@@ -1,5 +1,5 @@
 import { ConnectionState } from "@/types"
-import { getConnectionState, getConnectionNames } from "@/scripts"
+import { ConnectionService } from "@/services/connection"
 import { poll } from "./poll"
 
 export const pollConnectionState = async (
@@ -7,14 +7,14 @@ export const pollConnectionState = async (
   targetState: ConnectionState,
 ): Promise<ConnectionState | null> => {
   return poll(
-    () => getConnectionState(name),
+    () => ConnectionService.getConnectionState(name),
     (state) => state === targetState,
   )
 }
 
 export const pollAllDisconnected = async (): Promise<boolean> => {
   const result = await poll(
-    () => getConnectionNames(),
+    () => ConnectionService.getConnectionNames(),
     (connections) =>
       connections.every((c) => c.state === ConnectionState.Disconnected),
   )

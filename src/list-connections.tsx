@@ -1,7 +1,7 @@
 import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "@/types"
-import { connect, disconnect } from "@/scripts"
+import { ConnectionService } from "@/services/connection"
 import { ActionTitle, Error, Message, SectionTitle } from "@/constants"
 import { pollConnectionState } from "@/utils"
 import { setQuickConnect } from "@/api/storage"
@@ -35,8 +35,8 @@ export default function Command() {
       })
       setConnectionState(selectedConnection, ConnectionState.Changing)
 
-      if (isActive) await disconnect(selectedConnection.name)
-      else await connect(selectedConnection.name)
+      if (isActive) await ConnectionService.disconnect(selectedConnection.name)
+      else await ConnectionService.connect(selectedConnection.name)
 
       const finalState = await pollConnectionState(
         selectedConnection.name,
