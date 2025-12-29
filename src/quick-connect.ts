@@ -31,6 +31,9 @@ export default async function main() {
     if (finalState) {
       toast.style = Toast.Style.Success
       toast.title = `${Message.Connected} to "${primaryConnection.name}"`
+    } else {
+      toast.style = Toast.Style.Failure
+      toast.title = Error.Generic
     }
   } catch (e) {
     console.error(e)
