@@ -2,17 +2,11 @@ import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "@/types"
 import { connect, disconnect } from "@/scripts"
-import {
-  ActionTitle,
-  Error,
-  Icons,
-  Message,
-  SectionTitle,
-  Tooltip,
-} from "@/constants"
+import { ActionTitle, Error, Message, SectionTitle } from "@/constants"
 import { pollConnectionState } from "@/utils"
 import { setQuickConnect } from "@/api/storage"
 import { useConnections } from "@/useConnections"
+import { ConnectionListItem } from "@/components/ConnectionListItem"
 
 export default function Command() {
   const { connections, isLoading, loadConnections, updateConnectionState } =
@@ -86,23 +80,6 @@ export default function Command() {
     }
   }
 
-  const getIcon = (connection: Connection) => {
-    switch (connection.state) {
-      case ConnectionState.Connected:
-        return Icons.Connected
-      case ConnectionState.Disconnected:
-        return Icons.Disconnected
-      default:
-        return Icons.Changing
-    }
-  }
-
-  const getActionTitle = (connection: Connection) => {
-    return isConnectionActive(connection)
-      ? ActionTitle.Disconnect
-      : ActionTitle.Connect
-  }
-
   const activeConnections = connections.filter(
     (c) => c.state !== ConnectionState.Disconnected,
   )
@@ -115,43 +92,6 @@ export default function Command() {
       title={ActionTitle.Refresh}
       onAction={loadConnections}
       shortcut={{ modifiers: ["cmd"], key: "r" }}
-    />
-  )
-
-  const renderConnection = (connection: Connection) => (
-    <List.Item
-      key={connection.name}
-      id={connection.name}
-      title={connection.name}
-      icon={{ source: getIcon(connection) }}
-      accessories={
-        connection.isQuickConnect
-          ? [
-              {
-                icon: Icons.QuickConnect,
-                tooltip: Tooltip.QuickConnectAccessory,
-              },
-            ]
-          : []
-      }
-      actions={
-        <ActionPanel>
-          <Action
-            title={getActionTitle(connection)}
-            onAction={() => handleSelect(connection)}
-          />
-          <Action
-            title={
-              connection.isQuickConnect
-                ? ActionTitle.RemoveQuickConnect
-                : ActionTitle.MakeQuickConnect
-            }
-            onAction={() => makeQuickConnect(connection)}
-            shortcut={{ modifiers: ["shift", "cmd"], key: "q" }}
-          />
-          <RefreshAction />
-        </ActionPanel>
-      }
     />
   )
 
@@ -168,10 +108,26 @@ export default function Command() {
       }
     >
       <List.Section title={SectionTitle.Active}>
-        {activeConnections.map(renderConnection)}
+        {activeConnections.map((connection) => (
+          <ConnectionListItem
+            key={connection.name}
+            connection={connection}
+            onSelect={handleSelect}
+            onQuickConnect={makeQuickConnect}
+            onRefresh={loadConnections}
+          />
+        ))}
       </List.Section>
       <List.Section title={SectionTitle.Disconnected}>
-        {disconnectedConnections.map(renderConnection)}
+        {disconnectedConnections.map((connection) => (
+          <ConnectionListItem
+            key={connection.name}
+            connection={connection}
+            onSelect={handleSelect}
+            onQuickConnect={makeQuickConnect}
+            onRefresh={loadConnections}
+          />
+        ))}
       </List.Section>
     </List>
   )
