@@ -15,19 +15,19 @@
     {
       "name": "list-connections",
       "title": "List Connections",
-      "description": "Browse your VPN connections.",
+      "description": "List and manage your VPN connections.",
       "mode": "view"
     },
     {
       "name": "disconnect-all",
       "title": "Disconnect All",
-      "description": "Ends all currently active VPN sessions.",
+      "description": "Disconnect all active VPN sessions.",
       "mode": "no-view"
     },
     {
       "name": "quick-connect",
       "title": "Quick Connect",
-      "description": "Connects to the selected Quick Connect connection, or the first one in the list.",
+      "description": "Instantly connect to your preferred VPN.",
       "mode": "no-view"
     }
   ],
