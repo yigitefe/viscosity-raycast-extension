@@ -1,9 +1,23 @@
 import { showToast, Toast } from "@raycast/api"
 import { Message, Error } from "@/constants"
-import { disconnectAll, waitForAllDisconnected } from "@/api/viscosity"
+import {
+  getActiveConnections,
+  disconnectAll,
+  waitForAllDisconnected,
+} from "@/api/viscosity"
 
 export default async function main() {
   try {
+    const activeConnections = await getActiveConnections()
+
+    if (activeConnections.length === 0) {
+      await showToast({
+        style: Toast.Style.Success,
+        title: Message.NoActiveConnections,
+      })
+      return
+    }
+
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: Message.Disconnecting,

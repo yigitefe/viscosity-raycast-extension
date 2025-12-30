@@ -31,6 +31,11 @@ export async function getConnectionNames(): Promise<Connection[]> {
   })
 }
 
+export async function getActiveConnections(): Promise<Connection[]> {
+  const connections = await getConnectionNames()
+  return connections.filter((c) => c.state === ConnectionState.Connected)
+}
+
 export async function getConnectionState(
   name: string,
 ): Promise<ConnectionState | null> {

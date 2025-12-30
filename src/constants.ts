@@ -8,6 +8,8 @@ export const Message = {
   Disconnecting: "Disconnecting...",
   Connected: "Connected",
   Disconnected: "Disconnected",
+  NoActiveConnections: "There are no active connections",
+  AlreadyActive: "is already active",
 } as const
 
 export const ActionTitle = {
