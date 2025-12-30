@@ -4,8 +4,8 @@ export const Error = {
 } as const
 
 export const Message = {
-  Connecting: "Connecting...",
-  Disconnecting: "Disconnecting...",
+  Connecting: "Connecting",
+  Disconnecting: "Disconnecting",
   Connected: "Connected",
   Disconnected: "Disconnected",
   NoActiveConnections: "There are no active connections",
