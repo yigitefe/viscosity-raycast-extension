@@ -6,6 +6,9 @@
   "description": "Manage your Viscosity VPN connections directly from Raycast: list, connect, and disconnect with ease.",
   "icon": "extension-icon.png",
   "author": "yigitefe",
+  "platforms": [
+    "macOS"
+  ],
   "categories": [
     "Applications",
     "Security",
