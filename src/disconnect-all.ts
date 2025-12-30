@@ -1,7 +1,6 @@
 import { showToast, Toast } from "@raycast/api"
 import { Message, Error } from "@/constants"
-import { disconnectAll } from "@/api/viscosity"
-import { pollAllDisconnected } from "@/utils"
+import { disconnectAll, waitForAllDisconnected } from "@/api/viscosity"
 
 export default async function main() {
   try {
@@ -12,7 +11,7 @@ export default async function main() {
 
     await disconnectAll()
 
-    const finalState = await pollAllDisconnected()
+    const finalState = await waitForAllDisconnected()
 
     if (finalState) {
       toast.style = Toast.Style.Success

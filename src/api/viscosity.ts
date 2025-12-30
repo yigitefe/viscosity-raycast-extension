@@ -1,6 +1,6 @@
 import { runAppleScript } from "@raycast/utils"
 import { Connection, ConnectionState } from "@/types"
-import { escape } from "@/utils"
+import { escape, poll } from "@/utils"
 
 async function run(script: string): Promise<string> {
   return await runAppleScript(
@@ -62,4 +62,23 @@ export async function disconnect(name: string): Promise<void> {
 
 export async function disconnectAll(): Promise<void> {
   await run("disconnectall")
+}
+
+export async function waitForConnectionState(
+  name: string,
+  targetState: ConnectionState,
+): Promise<ConnectionState | null> {
+  return poll(
+    () => getConnectionState(name),
+    (state) => state === targetState,
+  )
+}
+
+export async function waitForAllDisconnected(): Promise<boolean> {
+  const result = await poll(
+    () => getConnectionNames(),
+    (connections) =>
+      connections.every((c) => c.state === ConnectionState.Disconnected),
+  )
+  return !!result
 }
