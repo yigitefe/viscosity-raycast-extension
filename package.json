@@ -12,7 +12,8 @@
   "categories": [
     "Applications",
     "Security",
-    "System"
+    "System",
+    "Communication"
   ],
   "license": "MIT",
   "commands": [
