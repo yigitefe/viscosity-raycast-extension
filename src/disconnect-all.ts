@@ -1,6 +1,6 @@
 import { showToast, Toast } from "@raycast/api"
 import { Message, Error } from "@/constants"
-import { ConnectionService } from "@/services/connection"
+import { disconnectAll } from "@/api/viscosity"
 import { pollAllDisconnected } from "@/utils"
 
 export default async function main() {
@@ -10,7 +10,7 @@ export default async function main() {
       title: Message.Disconnecting,
     })
 
-    await ConnectionService.disconnectAll()
+    await disconnectAll()
 
     const finalState = await pollAllDisconnected()
 

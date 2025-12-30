@@ -1,11 +1,16 @@
 import { showToast, Toast } from "@raycast/api"
 import { ConnectionState } from "@/types"
-import { Message, Error } from "@/constants"
-import { ConnectionService } from "@/services/connection"
-import { pollConnectionState } from "@/utils"
+import { Message, Error, StorageKeys } from "@/constants"
+import { getConnectionNames, connect } from "@/api/viscosity"
+import { getStorageValue } from "@/api/storage"
+import { pollConnectionState, sortConnections } from "@/utils"
 
 export default async function main() {
-  const primaryConnection = await ConnectionService.getPrimaryConnection()
+  const [rawConnections, quickConnect] = await Promise.all([
+    getConnectionNames(),
+    getStorageValue(StorageKeys.QuickConnect),
+  ])
+  const primaryConnection = sortConnections(rawConnections, quickConnect)[0]
 
   if (!primaryConnection) {
     await showToast({
@@ -21,7 +26,7 @@ export default async function main() {
       title: Message.Connecting,
     })
 
-    await ConnectionService.connect(primaryConnection.name)
+    await connect(primaryConnection.name)
 
     const finalState = await pollConnectionState(
       primaryConnection.name,

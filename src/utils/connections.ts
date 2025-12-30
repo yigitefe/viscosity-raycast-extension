@@ -19,3 +19,15 @@ export const compareConnections = (a: Connection, b: Connection) => {
 
   return a.name.localeCompare(b.name)
 }
+
+export const sortConnections = (
+  connections: Connection[],
+  quickConnectName: string,
+): Connection[] => {
+  return connections
+    .map((c) => ({
+      ...c,
+      isQuickConnect: c.name === quickConnectName,
+    }))
+    .sort(compareConnections)
+}

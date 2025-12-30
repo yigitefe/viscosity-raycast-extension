@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react"
 import { showToast, Toast } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
-import { ConnectionService } from "@/services/connection"
-import { compareConnections } from "@/utils"
-import { Error } from "@/constants"
+import { getConnectionNames } from "@/api/viscosity"
+import { getStorageValue } from "@/api/storage"
+import { compareConnections, sortConnections } from "@/utils"
+import { Error, StorageKeys } from "@/constants"
 
 export function useConnections() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -12,8 +13,11 @@ export function useConnections() {
   const loadConnections = useCallback(async () => {
     setIsLoading(true)
     try {
-      const sortedConnections = await ConnectionService.getSortedConnections()
-      setConnections(sortedConnections)
+      const [rawConnections, quickConnect] = await Promise.all([
+        getConnectionNames(),
+        getStorageValue(StorageKeys.QuickConnect),
+      ])
+      setConnections(sortConnections(rawConnections, quickConnect))
     } catch (e) {
       console.error(e)
       await showToast({

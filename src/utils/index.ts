@@ -1,4 +1,3 @@
-export * from "./compare"
-export * from "./escape"
-export * from "./poll"
-export * from "./viscosity-poll"
+export * from "./connections"
+export * from "./strings"
+export * from "./polling"
