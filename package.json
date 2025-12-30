@@ -1,6 +1,7 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "viscosity",
+  "type": "module",
   "title": "Viscosity",
   "description": "Manage your Viscosity VPN connections directly from Raycast: list, connect, and disconnect with ease.",
   "icon": "extension-icon.png",
