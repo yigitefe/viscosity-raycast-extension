@@ -4,7 +4,7 @@ import { Connection, ConnectionState } from "@/types"
 import { connect, disconnect, waitForConnectionState } from "@/api/viscosity"
 import { ActionTitle, Error, Message, SectionTitle } from "@/constants"
 import { setQuickConnect } from "@/api/storage"
-import { useConnections } from "@/use-connections"
+import { useConnections } from "@/hooks/use-connections"
 import { ConnectionListItem } from "@/components/connection-list-item"
 
 export default function Command() {
