@@ -1,5 +1,6 @@
 export const Error = {
   Generic: "An error occurred",
+  NoConnections: "No connections found",
 } as const
 
 export const Message = {

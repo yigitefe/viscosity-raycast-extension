@@ -19,7 +19,7 @@ export default async function main() {
   if (!primaryConnection) {
     await showToast({
       style: Toast.Style.Failure,
-      title: "No connections found",
+      title: Error.NoConnections,
     })
     return
   }
