@@ -39,11 +39,7 @@ export function QuickConnectAction({
 }) {
   return (
     <Action
-      title={
-        connection.isQuickConnect
-          ? ActionTitle.RemoveQuickConnect
-          : ActionTitle.MakeQuickConnect
-      }
+      title={connection.isQuickConnect ? ActionTitle.RemoveQuickConnect : ActionTitle.MakeQuickConnect}
       icon={connection.isQuickConnect ? Icon.BoltDisabled : Icon.Bolt}
       onAction={() => onAction(connection)}
       shortcut={{ modifiers: ["shift", "cmd"], key: "q" }}

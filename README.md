@@ -12,15 +12,19 @@ Manage your [Viscosity](https://www.sparklabs.com/viscosity/) VPN connections di
 ## Usage
 
 ### List Connections
-This is the main command to manage your VPNs. 
+
+This is the main command to manage your VPNs.
+
 - **Enter** to toggle the connection (Connect/Disconnect).
 - **Cmd + Shift + Q** to set or remove a connection as your Quick Connect default.
 - **Cmd + R** to refresh the connection list.
 
 ### Quick Connect
+
 Run this command to immediately initiate a connection to your preferred VPN. If no Quick Connect is set, it will attempt to connect to the first VPN in your list.
 
 ### Disconnect All
+
 Useful when you want to quickly drop all active tunnels without going through the list.
 
 ## Prerequisites
@@ -30,4 +34,4 @@ Useful when you want to quickly drop all active tunnels without going through th
 
 ---
 
-*Note: This extension is not affiliated with SparkLabs, the creators of Viscosity.*
+_Note: This extension is not affiliated with SparkLabs, the creators of Viscosity._

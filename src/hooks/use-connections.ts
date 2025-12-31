@@ -29,18 +29,9 @@ export function useConnections() {
     loadConnections()
   }, [loadConnections])
 
-  const updateConnectionState = useCallback(
-    (selectedConnection: Connection, state: ConnectionState) => {
-      setConnections((prev) =>
-        prev
-          .map((c) =>
-            c.name === selectedConnection.name ? { ...c, state } : c,
-          )
-          .sort(compare),
-      )
-    },
-    [],
-  )
+  const updateConnectionState = useCallback((selectedConnection: Connection, state: ConnectionState) => {
+    setConnections((prev) => prev.map((c) => (c.name === selectedConnection.name ? { ...c, state } : c)).sort(compare))
+  }, [])
 
   return {
     connections,

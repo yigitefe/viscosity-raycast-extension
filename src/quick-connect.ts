@@ -1,24 +1,17 @@
 import { showToast, Toast } from "@raycast/api"
 import { ConnectionState } from "@/types"
 import { Message, Error, StorageKeys } from "@/constants"
-import {
-  getConnectionNames,
-  getActiveConnections,
-  connect,
-  waitForConnectionState,
-} from "@/api/viscosity"
+import { getConnectionNames, getActiveConnections, connect, waitForConnectionState } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
 import { sort, showErrorToast } from "@/utils"
 
 export default async function main() {
   try {
-    const [rawConnections, activeConnections, quickConnect] = await Promise.all(
-      [
-        getConnectionNames(),
-        getActiveConnections(),
-        getStorageValue(StorageKeys.QuickConnect),
-      ],
-    )
+    const [rawConnections, activeConnections, quickConnect] = await Promise.all([
+      getConnectionNames(),
+      getActiveConnections(),
+      getStorageValue(StorageKeys.QuickConnect),
+    ])
     const primaryConnection = sort(rawConnections, quickConnect)[0]
 
     if (!primaryConnection) {
@@ -29,9 +22,7 @@ export default async function main() {
       return
     }
 
-    const isAlreadyActive = activeConnections.some(
-      (c) => c.name === primaryConnection.name,
-    )
+    const isAlreadyActive = activeConnections.some((c) => c.name === primaryConnection.name)
 
     if (isAlreadyActive) {
       await showToast({
@@ -48,10 +39,7 @@ export default async function main() {
 
     await connect(primaryConnection.name)
 
-    const finalState = await waitForConnectionState(
-      primaryConnection.name,
-      ConnectionState.Connected,
-    )
+    const finalState = await waitForConnectionState(primaryConnection.name, ConnectionState.Connected)
 
     if (finalState) {
       toast.style = Toast.Style.Success

@@ -3,9 +3,7 @@ import { Connection, ConnectionState } from "@/types"
 import { escape, poll } from "@/utils"
 
 async function run(script: string): Promise<string> {
-  return await runAppleScript(
-    `tell application "Viscosity"\n${script}\nend tell`,
-  )
+  return await runAppleScript(`tell application "Viscosity"\n${script}\nend tell`)
 }
 
 export async function getConnectionNames(): Promise<Connection[]> {
@@ -36,9 +34,7 @@ export async function getActiveConnections(): Promise<Connection[]> {
   return connections.filter((c) => c.state === ConnectionState.Connected)
 }
 
-export async function getConnectionState(
-  name: string,
-): Promise<ConnectionState | null> {
+export async function getConnectionState(name: string): Promise<ConnectionState | null> {
   const script = `
       set connectionCount to count of connections
       set connectionState to ""
@@ -82,8 +78,7 @@ export async function waitForConnectionState(
 export async function waitForAllDisconnected(): Promise<boolean> {
   const result = await poll(
     () => getConnectionNames(),
-    (connections) =>
-      connections.every((c) => c.state === ConnectionState.Disconnected),
+    (connections) => connections.every((c) => c.state === ConnectionState.Disconnected),
   )
   return !!result
 }

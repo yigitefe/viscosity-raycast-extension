@@ -20,10 +20,7 @@ export const compare = (a: Connection, b: Connection) => {
   return a.name.localeCompare(b.name)
 }
 
-export const sort = (
-  connections: Connection[],
-  quickConnectName: string,
-): Connection[] => {
+export const sort = (connections: Connection[], quickConnectName: string): Connection[] => {
   return connections
     .map((c) => ({
       ...c,

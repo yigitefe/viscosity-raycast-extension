@@ -10,12 +10,7 @@ interface ConnectionListItemProps {
   onRefresh: () => void
 }
 
-export function ConnectionListItem({
-  connection,
-  onSelect,
-  onQuickConnect,
-  onRefresh,
-}: ConnectionListItemProps) {
+export function ConnectionListItem({ connection, onSelect, onQuickConnect, onRefresh }: ConnectionListItemProps) {
   const getIcon = () => {
     switch (connection.state) {
       case ConnectionState.Connected:
@@ -45,10 +40,7 @@ export function ConnectionListItem({
       actions={
         <ActionPanel>
           <ConnectionAction connection={connection} onAction={onSelect} />
-          <QuickConnectAction
-            connection={connection}
-            onAction={onQuickConnect}
-          />
+          <QuickConnectAction connection={connection} onAction={onQuickConnect} />
           <RefreshAction onAction={onRefresh} />
         </ActionPanel>
       }

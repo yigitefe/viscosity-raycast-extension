@@ -10,17 +10,12 @@ import { RefreshAction } from "@/components/actions"
 import { showErrorToast } from "@/utils"
 
 export default function Command() {
-  const { connections, isLoading, loadConnections, updateConnectionState } =
-    useConnections()
+  const { connections, isLoading, loadConnections, updateConnectionState } = useConnections()
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const isConnectionActive = (connection: Connection) =>
-    connection.state === ConnectionState.Connected
+  const isConnectionActive = (connection: Connection) => connection.state === ConnectionState.Connected
 
-  const setConnectionState = (
-    selectedConnection: Connection,
-    state: ConnectionState,
-  ) => {
+  const setConnectionState = (selectedConnection: Connection, state: ConnectionState) => {
     updateConnectionState(selectedConnection, state)
     setTimeout(() => setSelectedId(selectedConnection.name), 50)
   }
@@ -51,10 +46,7 @@ export default function Command() {
 
       if (finalState) {
         toast.style = Toast.Style.Success
-        toast.title =
-          finalState === ConnectionState.Connected
-            ? Message.Connected
-            : Message.Disconnected
+        toast.title = finalState === ConnectionState.Connected ? Message.Connected : Message.Disconnected
       } else {
         toast.style = Toast.Style.Failure
         toast.title = Error.Generic
@@ -75,12 +67,8 @@ export default function Command() {
     }
   }
 
-  const activeConnections = connections.filter(
-    (c) => c.state !== ConnectionState.Disconnected,
-  )
-  const disconnectedConnections = connections.filter(
-    (c) => c.state === ConnectionState.Disconnected,
-  )
+  const activeConnections = connections.filter((c) => c.state !== ConnectionState.Disconnected)
+  const disconnectedConnections = connections.filter((c) => c.state === ConnectionState.Disconnected)
 
   const renderConnection = (connection: Connection) => (
     <ConnectionListItem
@@ -104,12 +92,8 @@ export default function Command() {
         </ActionPanel>
       }
     >
-      <List.Section title={SectionTitle.Active}>
-        {activeConnections.map(renderConnection)}
-      </List.Section>
-      <List.Section title={SectionTitle.Disconnected}>
-        {disconnectedConnections.map(renderConnection)}
-      </List.Section>
+      <List.Section title={SectionTitle.Active}>{activeConnections.map(renderConnection)}</List.Section>
+      <List.Section title={SectionTitle.Disconnected}>{disconnectedConnections.map(renderConnection)}</List.Section>
     </List>
   )
 }

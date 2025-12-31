@@ -9,8 +9,6 @@ export const isPermissionError = (error: unknown) => {
 export const showErrorToast = async (error: unknown) => {
   await showToast({
     style: Toast.Style.Failure,
-    title: isPermissionError(error)
-      ? ErrorMessage.Permissions
-      : ErrorMessage.Generic,
+    title: isPermissionError(error) ? ErrorMessage.Permissions : ErrorMessage.Generic,
   })
 }
