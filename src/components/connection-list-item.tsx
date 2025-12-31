@@ -1,4 +1,4 @@
-import { Action, ActionPanel, List } from "@raycast/api"
+import { Action, ActionPanel, Icon, List } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
 import { ActionTitle, Icons, Tooltip } from "@/constants"
 
@@ -28,10 +28,6 @@ export function ConnectionListItem({
     }
   }
 
-  const getActionTitle = () => {
-    return isConnectionActive ? ActionTitle.Disconnect : ActionTitle.Connect
-  }
-
   return (
     <List.Item
       id={connection.name}
@@ -41,7 +37,7 @@ export function ConnectionListItem({
         connection.isQuickConnect
           ? [
               {
-                icon: Icons.QuickConnect,
+                icon: Icon.Bolt,
                 tooltip: Tooltip.QuickConnectAccessory,
               },
             ]
@@ -50,7 +46,10 @@ export function ConnectionListItem({
       actions={
         <ActionPanel>
           <Action
-            title={getActionTitle()}
+            title={
+              isConnectionActive ? ActionTitle.Disconnect : ActionTitle.Connect
+            }
+            icon={isConnectionActive ? Icon.XMarkCircle : Icon.Circle}
             onAction={() => onSelect(connection)}
           />
           <Action
@@ -59,11 +58,13 @@ export function ConnectionListItem({
                 ? ActionTitle.RemoveQuickConnect
                 : ActionTitle.MakeQuickConnect
             }
+            icon={connection.isQuickConnect ? Icon.BoltDisabled : Icon.Bolt}
             onAction={() => onQuickConnect(connection)}
             shortcut={{ modifiers: ["shift", "cmd"], key: "q" }}
           />
           <Action
             title={ActionTitle.Refresh}
+            icon={Icon.Repeat}
             onAction={onRefresh}
             shortcut={{ modifiers: ["cmd"], key: "r" }}
           />

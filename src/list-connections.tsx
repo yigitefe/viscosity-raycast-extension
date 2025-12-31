@@ -1,4 +1,4 @@
-import { Action, ActionPanel, List, showToast, Toast } from "@raycast/api"
+import { Action, ActionPanel, Icon, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "@/types"
 import { connect, disconnect, waitForConnectionState } from "@/api/viscosity"
@@ -101,6 +101,7 @@ export default function Command() {
         <ActionPanel>
           <Action
             title={ActionTitle.Refresh}
+            icon={Icon.Repeat}
             onAction={loadConnections}
             shortcut={{ modifiers: ["cmd"], key: "r" }}
           />

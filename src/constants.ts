@@ -34,7 +34,6 @@ export const Icons = {
   Connected: "connected.png",
   Disconnected: "disconnected.png",
   Changing: "loading.png",
-  QuickConnect: "quick-connect.png",
 } as const
 
 export const StorageKeys = {
