@@ -1,6 +1,7 @@
 export const Error = {
   Generic: "An error occurred",
   NoConnections: "No connections found",
+  Permissions: "Please allow Raycast to control Viscosity in System Settings",
 } as const
 
 export const Message = {

@@ -3,7 +3,7 @@ import { showToast, Toast } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
 import { getConnectionNames } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
-import { compareConnections, sortConnections } from "@/utils"
+import { compareConnections, sortConnections, isPermissionError } from "@/utils"
 import { Error, StorageKeys } from "@/constants"
 
 export function useConnections() {
@@ -22,7 +22,7 @@ export function useConnections() {
       console.error(e)
       await showToast({
         style: Toast.Style.Failure,
-        title: Error.Generic,
+        title: isPermissionError(e) ? Error.Permissions : Error.Generic,
       })
     } finally {
       setIsLoading(false)

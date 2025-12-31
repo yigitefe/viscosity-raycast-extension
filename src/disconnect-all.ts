@@ -5,6 +5,7 @@ import {
   disconnectAll,
   waitForAllDisconnected,
 } from "@/api/viscosity"
+import { isPermissionError } from "@/utils"
 
 export default async function main() {
   try {
@@ -35,7 +36,7 @@ export default async function main() {
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: Error.Generic,
+      title: isPermissionError(e) ? Error.Permissions : Error.Generic,
     })
   }
 }

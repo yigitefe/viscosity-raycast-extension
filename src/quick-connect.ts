@@ -8,37 +8,39 @@ import {
   waitForConnectionState,
 } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
-import { sortConnections } from "@/utils"
+import { sortConnections, isPermissionError } from "@/utils"
 
 export default async function main() {
-  const [rawConnections, activeConnections, quickConnect] = await Promise.all([
-    getConnectionNames(),
-    getActiveConnections(),
-    getStorageValue(StorageKeys.QuickConnect),
-  ])
-  const primaryConnection = sortConnections(rawConnections, quickConnect)[0]
-
-  if (!primaryConnection) {
-    await showToast({
-      style: Toast.Style.Failure,
-      title: Error.NoConnections,
-    })
-    return
-  }
-
-  const isAlreadyActive = activeConnections.some(
-    (c) => c.name === primaryConnection.name,
-  )
-
-  if (isAlreadyActive) {
-    await showToast({
-      style: Toast.Style.Success,
-      title: `"${primaryConnection.name}" ${Message.AlreadyActive}`,
-    })
-    return
-  }
-
   try {
+    const [rawConnections, activeConnections, quickConnect] = await Promise.all(
+      [
+        getConnectionNames(),
+        getActiveConnections(),
+        getStorageValue(StorageKeys.QuickConnect),
+      ],
+    )
+    const primaryConnection = sortConnections(rawConnections, quickConnect)[0]
+
+    if (!primaryConnection) {
+      await showToast({
+        style: Toast.Style.Failure,
+        title: Error.NoConnections,
+      })
+      return
+    }
+
+    const isAlreadyActive = activeConnections.some(
+      (c) => c.name === primaryConnection.name,
+    )
+
+    if (isAlreadyActive) {
+      await showToast({
+        style: Toast.Style.Success,
+        title: `"${primaryConnection.name}" ${Message.AlreadyActive}`,
+      })
+      return
+    }
+
     const toast = await showToast({
       style: Toast.Style.Animated,
       title: Message.Connecting,
@@ -62,7 +64,7 @@ export default async function main() {
     console.error(e)
     await showToast({
       style: Toast.Style.Failure,
-      title: Error.Generic,
+      title: isPermissionError(e) ? Error.Permissions : Error.Generic,
     })
   }
 }
