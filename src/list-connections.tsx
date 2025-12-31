@@ -1,11 +1,12 @@
-import { Action, ActionPanel, Icon, List, showToast, Toast } from "@raycast/api"
+import { ActionPanel, List, showToast, Toast } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "@/types"
 import { connect, disconnect, waitForConnectionState } from "@/api/viscosity"
-import { ActionTitle, Error, Message, SectionTitle } from "@/constants"
+import { Error, Message, SectionTitle } from "@/constants"
 import { setQuickConnect } from "@/api/storage"
 import { useConnections } from "@/hooks/use-connections"
 import { ConnectionListItem } from "@/components/connection-list-item"
+import { RefreshAction } from "@/components/actions"
 import { showErrorToast } from "@/utils"
 
 export default function Command() {
@@ -99,12 +100,7 @@ export default function Command() {
       filtering={{ keepSectionOrder: true }}
       actions={
         <ActionPanel>
-          <Action
-            title={ActionTitle.Refresh}
-            icon={Icon.Repeat}
-            onAction={loadConnections}
-            shortcut={{ modifiers: ["cmd"], key: "r" }}
-          />
+          <RefreshAction onAction={loadConnections} />
         </ActionPanel>
       }
     >
