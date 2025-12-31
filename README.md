@@ -1,6 +1,6 @@
 # Viscosity
 
-Manage your [Viscosity](https://www.sparklabs.com/viscosity/) VPN connections directly from Raycast: list, connect, and disconnect with ease.
+Manage your [Viscosity](https://www.sparklabs.com/viscosity/) VPN connections directly from [Raycast](https://raycast.com): list, connect, and disconnect with ease.
 
 ## Features
 
