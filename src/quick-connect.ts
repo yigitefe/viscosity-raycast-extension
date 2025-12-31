@@ -8,7 +8,7 @@ import {
   waitForConnectionState,
 } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
-import { sortConnections, showErrorToast } from "@/utils"
+import { sort, showErrorToast } from "@/utils"
 
 export default async function main() {
   try {
@@ -19,7 +19,7 @@ export default async function main() {
         getStorageValue(StorageKeys.QuickConnect),
       ],
     )
-    const primaryConnection = sortConnections(rawConnections, quickConnect)[0]
+    const primaryConnection = sort(rawConnections, quickConnect)[0]
 
     if (!primaryConnection) {
       await showToast({

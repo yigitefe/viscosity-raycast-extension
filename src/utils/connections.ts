@@ -1,6 +1,6 @@
 import { Connection, ConnectionState } from "@/types"
 
-export const compareConnections = (a: Connection, b: Connection) => {
+export const compare = (a: Connection, b: Connection) => {
   if (a.isQuickConnect && !b.isQuickConnect) return -1
   if (!a.isQuickConnect && b.isQuickConnect) return 1
 
@@ -20,7 +20,7 @@ export const compareConnections = (a: Connection, b: Connection) => {
   return a.name.localeCompare(b.name)
 }
 
-export const sortConnections = (
+export const sort = (
   connections: Connection[],
   quickConnectName: string,
 ): Connection[] => {
@@ -29,5 +29,5 @@ export const sortConnections = (
       ...c,
       isQuickConnect: c.name === quickConnectName,
     }))
-    .sort(compareConnections)
+    .sort(compare)
 }

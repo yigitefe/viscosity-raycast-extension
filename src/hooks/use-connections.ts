@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Connection, ConnectionState } from "@/types"
 import { getConnectionNames } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
-import { compareConnections, sortConnections, showErrorToast } from "@/utils"
+import { compare, sort, showErrorToast } from "@/utils"
 import { StorageKeys } from "@/constants"
 
 export function useConnections() {
@@ -16,7 +16,7 @@ export function useConnections() {
         getConnectionNames(),
         getStorageValue(StorageKeys.QuickConnect),
       ])
-      setConnections(sortConnections(rawConnections, quickConnect))
+      setConnections(sort(rawConnections, quickConnect))
     } catch (e) {
       console.error(e)
       await showErrorToast(e)
@@ -36,7 +36,7 @@ export function useConnections() {
           .map((c) =>
             c.name === selectedConnection.name ? { ...c, state } : c,
           )
-          .sort(compareConnections),
+          .sort(compare),
       )
     },
     [],
