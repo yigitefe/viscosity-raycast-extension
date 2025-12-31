@@ -6,6 +6,7 @@ import { ActionTitle, Error, Message, SectionTitle } from "@/constants"
 import { setQuickConnect } from "@/api/storage"
 import { useConnections } from "@/hooks/use-connections"
 import { ConnectionListItem } from "@/components/connection-list-item"
+import { showErrorToast } from "@/utils"
 
 export default function Command() {
   const { connections, isLoading, loadConnections, updateConnectionState } =
@@ -59,10 +60,7 @@ export default function Command() {
       }
     } catch (e) {
       console.error(e)
-      await showToast({
-        style: Toast.Style.Failure,
-        title: Error.Generic,
-      })
+      await showErrorToast(e)
     }
   }
 
@@ -72,10 +70,7 @@ export default function Command() {
       await loadConnections()
     } catch (e) {
       console.error(e)
-      await showToast({
-        style: Toast.Style.Failure,
-        title: Error.Generic,
-      })
+      await showErrorToast(e)
     }
   }
 

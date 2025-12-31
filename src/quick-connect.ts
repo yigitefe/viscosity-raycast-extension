@@ -8,7 +8,7 @@ import {
   waitForConnectionState,
 } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
-import { sortConnections, isPermissionError } from "@/utils"
+import { sortConnections, showErrorToast } from "@/utils"
 
 export default async function main() {
   try {
@@ -62,9 +62,6 @@ export default async function main() {
     }
   } catch (e) {
     console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: isPermissionError(e) ? Error.Permissions : Error.Generic,
-    })
+    await showErrorToast(e)
   }
 }

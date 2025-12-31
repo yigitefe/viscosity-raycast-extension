@@ -1,11 +1,11 @@
 import { showToast, Toast } from "@raycast/api"
-import { Message, Error } from "@/constants"
+import { Message } from "@/constants"
 import {
   getActiveConnections,
   disconnectAll,
   waitForAllDisconnected,
 } from "@/api/viscosity"
-import { isPermissionError } from "@/utils"
+import { showErrorToast } from "@/utils"
 
 export default async function main() {
   try {
@@ -34,9 +34,6 @@ export default async function main() {
     }
   } catch (e) {
     console.error(e)
-    await showToast({
-      style: Toast.Style.Failure,
-      title: isPermissionError(e) ? Error.Permissions : Error.Generic,
-    })
+    await showErrorToast(e)
   }
 }

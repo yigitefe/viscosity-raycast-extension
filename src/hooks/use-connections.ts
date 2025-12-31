@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
-import { showToast, Toast } from "@raycast/api"
 import { Connection, ConnectionState } from "@/types"
 import { getConnectionNames } from "@/api/viscosity"
 import { getStorageValue } from "@/api/storage"
-import { compareConnections, sortConnections, isPermissionError } from "@/utils"
-import { Error, StorageKeys } from "@/constants"
+import { compareConnections, sortConnections, showErrorToast } from "@/utils"
+import { StorageKeys } from "@/constants"
 
 export function useConnections() {
   const [connections, setConnections] = useState<Connection[]>([])
@@ -20,10 +19,7 @@ export function useConnections() {
       setConnections(sortConnections(rawConnections, quickConnect))
     } catch (e) {
       console.error(e)
-      await showToast({
-        style: Toast.Style.Failure,
-        title: isPermissionError(e) ? Error.Permissions : Error.Generic,
-      })
+      await showErrorToast(e)
     } finally {
       setIsLoading(false)
     }
