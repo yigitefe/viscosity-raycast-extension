@@ -29,6 +29,7 @@ export const Message = {
     Disconnecting: `🟡 ${MessageText.Disconnecting}`,
     Connected: `🟢 ${MessageText.Connected}`,
     Disconnected: `🔴 ${MessageText.Disconnected}`,
+    NoActiveConnections: `ℹ️ ${MessageText.NoActiveConnections}`,
     AlreadyActive: `${MessageText.AlreadyActive}`,
   },
 } as const
