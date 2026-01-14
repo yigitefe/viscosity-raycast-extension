@@ -37,11 +37,11 @@ export function ConnectionListItem({
       accessories={
         connection.isQuickConnect
           ? [
-            {
-              icon: Icon.Bolt,
-              tooltip: Tooltip.QuickConnectAccessory,
-            },
-          ]
+              {
+                icon: Icon.Bolt,
+                tooltip: Tooltip.QuickConnectAccessory,
+              },
+            ]
           : []
       }
       actions={

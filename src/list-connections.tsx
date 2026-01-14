@@ -60,9 +60,7 @@ export default function Command() {
       }
 
       if (useHUD) {
-        await showHUD((finalState === ConnectionState.Connected
-          ? Message.HUD.Connected
-          : Message.HUD.Disconnected))
+        await showHUD(finalState === ConnectionState.Connected ? Message.HUD.Connected : Message.HUD.Disconnected)
       } else if (toast) {
         toast.style = Toast.Style.Success
         toast.title = finalState === ConnectionState.Connected ? Message.Connected : Message.Disconnected
