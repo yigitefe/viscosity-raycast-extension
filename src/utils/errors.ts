@@ -1,4 +1,4 @@
-import { showToast, Toast } from "@raycast/api"
+import { showToast, Toast, showHUD } from "@raycast/api"
 import { Error as ErrorMessage } from "@/constants"
 
 export const isPermissionError = (error: unknown) => {
@@ -11,4 +11,8 @@ export const showErrorToast = async (error: unknown) => {
     style: Toast.Style.Failure,
     title: isPermissionError(error) ? ErrorMessage.Permissions : ErrorMessage.Generic,
   })
+}
+
+export const showErrorHUD = async (error: unknown) => {
+  await showHUD(isPermissionError(error) ? ErrorMessage.Permissions : ErrorMessage.Generic)
 }
