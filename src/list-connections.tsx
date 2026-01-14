@@ -1,4 +1,4 @@
-import { ActionPanel, List, showToast, Toast } from "@raycast/api"
+import { ActionPanel, List, showToast, Toast, closeMainWindow, showHUD } from "@raycast/api"
 import { useState } from "react"
 import { Connection, ConnectionState } from "@/types"
 import { connect, disconnect, waitForConnectionState } from "@/api/viscosity"
@@ -7,7 +7,7 @@ import { setQuickConnect } from "@/api/storage"
 import { useConnections } from "@/hooks/use-connections"
 import { ConnectionListItem } from "@/components/connection-list-item"
 import { RefreshAction } from "@/components/actions"
-import { showErrorToast } from "@/utils"
+import { showErrorToast, showErrorHUD } from "@/utils"
 
 export default function Command() {
   const { connections, isLoading, loadConnections, updateConnectionState } = useConnections()
@@ -20,15 +20,21 @@ export default function Command() {
     setTimeout(() => setSelectedId(selectedConnection.name), 50)
   }
 
-  const handleSelect = async (selectedConnection: Connection) => {
+  const toggleConnection = async (selectedConnection: Connection, { useHUD = false } = {}) => {
     const isActive = isConnectionActive(selectedConnection)
-    const actionMessage = isActive ? Message.Disconnecting : Message.Connecting
+
+    let toast: Toast | undefined
+    if (useHUD) {
+      await closeMainWindow()
+      await showHUD(isActive ? Message.HUD.Disconnecting : Message.HUD.Connecting)
+    } else {
+      toast = await showToast({
+        style: Toast.Style.Animated,
+        title: isActive ? Message.Disconnecting : Message.Connecting,
+      })
+    }
 
     try {
-      const toast = await showToast({
-        style: Toast.Style.Animated,
-        title: actionMessage,
-      })
       setConnectionState(selectedConnection, ConnectionState.Changing)
 
       if (isActive) await disconnect(selectedConnection.name)
@@ -44,18 +50,32 @@ export default function Command() {
       // fetch all the connections again to get the correct state for all connections.
       await loadConnections()
 
-      if (finalState) {
+      if (!finalState) {
+        if (useHUD) await showHUD(Error.HUD.Generic)
+        else if (toast) {
+          toast.style = Toast.Style.Failure
+          toast.title = Error.Generic
+        }
+        return
+      }
+
+      if (useHUD) {
+        await showHUD((finalState === ConnectionState.Connected
+          ? Message.HUD.Connected
+          : Message.HUD.Disconnected))
+      } else if (toast) {
         toast.style = Toast.Style.Success
         toast.title = finalState === ConnectionState.Connected ? Message.Connected : Message.Disconnected
-      } else {
-        toast.style = Toast.Style.Failure
-        toast.title = Error.Generic
       }
     } catch (e) {
       console.error(e)
-      await showErrorToast(e)
+      if (useHUD) await showErrorHUD(e)
+      else await showErrorToast(e)
     }
   }
+
+  const handleSelect = (c: Connection) => toggleConnection(c)
+  const handleSelectAndClose = (c: Connection) => toggleConnection(c, { useHUD: true })
 
   const makeQuickConnect = async (connection: Connection) => {
     try {
@@ -75,6 +95,7 @@ export default function Command() {
       key={connection.name}
       connection={connection}
       onSelect={handleSelect}
+      onSelectAndClose={handleSelectAndClose}
       onQuickConnect={makeQuickConnect}
       onRefresh={loadConnections}
     />

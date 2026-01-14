@@ -16,16 +16,21 @@ export function RefreshAction({ onAction }: { onAction: () => void }) {
 export function ConnectionAction({
   connection,
   onAction,
+  isClose = false,
 }: {
   connection: Connection
   onAction: (connection: Connection) => void
+  isClose?: boolean
 }) {
   const isConnectionActive = connection.state === ConnectionState.Connected
+  const actionTitle = isConnectionActive ? ActionTitle.Disconnect : ActionTitle.Connect
+
   return (
     <Action
-      title={isConnectionActive ? ActionTitle.Disconnect : ActionTitle.Connect}
+      title={isClose ? `${actionTitle} and Close` : actionTitle}
       icon={isConnectionActive ? Icon.XMarkCircle : Icon.Circle}
       onAction={() => onAction(connection)}
+      shortcut={isClose ? { modifiers: ["cmd"], key: "enter" } : undefined}
     />
   )
 }

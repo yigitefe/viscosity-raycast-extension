@@ -6,11 +6,18 @@ import { RefreshAction, ConnectionAction, QuickConnectAction } from "./actions"
 interface ConnectionListItemProps {
   connection: Connection
   onSelect: (connection: Connection) => void
+  onSelectAndClose: (connection: Connection) => void
   onQuickConnect: (connection: Connection) => void
   onRefresh: () => void
 }
 
-export function ConnectionListItem({ connection, onSelect, onQuickConnect, onRefresh }: ConnectionListItemProps) {
+export function ConnectionListItem({
+  connection,
+  onSelect,
+  onSelectAndClose,
+  onQuickConnect,
+  onRefresh,
+}: ConnectionListItemProps) {
   const getIcon = () => {
     switch (connection.state) {
       case ConnectionState.Connected:
@@ -30,16 +37,17 @@ export function ConnectionListItem({ connection, onSelect, onQuickConnect, onRef
       accessories={
         connection.isQuickConnect
           ? [
-              {
-                icon: Icon.Bolt,
-                tooltip: Tooltip.QuickConnectAccessory,
-              },
-            ]
+            {
+              icon: Icon.Bolt,
+              tooltip: Tooltip.QuickConnectAccessory,
+            },
+          ]
           : []
       }
       actions={
         <ActionPanel>
           <ConnectionAction connection={connection} onAction={onSelect} />
+          <ConnectionAction connection={connection} onAction={onSelectAndClose} isClose />
           <QuickConnectAction connection={connection} onAction={onQuickConnect} />
           <RefreshAction onAction={onRefresh} />
         </ActionPanel>
