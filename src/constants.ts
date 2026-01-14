@@ -1,16 +1,36 @@
-export const Error = {
+const ErrorMessages = {
   Generic: "An error occurred",
   NoConnections: "No connections found",
   Permissions: "Please allow Raycast to control Viscosity in System Settings",
 } as const
 
-export const Message = {
+export const Error = {
+  ...ErrorMessages,
+  HUD: {
+    Generic: `❌ ${ErrorMessages.Generic}`,
+    NoConnections: `⚠️ ${ErrorMessages.NoConnections}`,
+    Permissions: `🔒 ${ErrorMessages.Permissions}`,
+  },
+} as const
+
+const MessageText = {
   Connecting: "Connecting",
   Disconnecting: "Disconnecting",
   Connected: "Connected",
   Disconnected: "Disconnected",
   NoActiveConnections: "There are no active connections",
   AlreadyActive: "is already active",
+} as const
+
+export const Message = {
+  ...MessageText,
+  HUD: {
+    Connecting: `🟡 ${MessageText.Connecting}`,
+    Disconnecting: `🟡 ${MessageText.Disconnecting}`,
+    Connected: `🟢 ${MessageText.Connected}`,
+    Disconnected: `🔴 ${MessageText.Disconnected}`,
+    AlreadyActive: `${MessageText.AlreadyActive}`,
+  },
 } as const
 
 export const ActionTitle = {

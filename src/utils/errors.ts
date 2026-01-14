@@ -14,5 +14,5 @@ export const showErrorToast = async (error: unknown) => {
 }
 
 export const showErrorHUD = async (error: unknown) => {
-  await showHUD(isPermissionError(error) ? ErrorMessage.Permissions : ErrorMessage.Generic)
+  await showHUD(isPermissionError(error) ? ErrorMessage.HUD.Permissions : ErrorMessage.HUD.Generic)
 }

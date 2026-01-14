@@ -16,27 +16,27 @@ export default async function main() {
     const primaryConnection = sort(rawConnections, quickConnect)[0]
 
     if (!primaryConnection) {
-      await showHUD(Error.NoConnections)
+      await showHUD(Error.HUD.NoConnections)
       return
     }
 
     const isAlreadyActive = activeConnections.some((c) => c.name === primaryConnection.name)
 
     if (isAlreadyActive) {
-      await showHUD(`"${primaryConnection.name}" ${Message.AlreadyActive}`)
+      await showHUD(`✅ "${primaryConnection.name}" ${Message.AlreadyActive}`)
       return
     }
 
-    await showHUD(Message.Connecting)
+    await showHUD(Message.HUD.Connecting)
 
     await connect(primaryConnection.name)
 
     const finalState = await waitForConnectionState(primaryConnection.name, ConnectionState.Connected)
 
     if (finalState) {
-      await showHUD(`${Message.Connected} to "${primaryConnection.name}"`)
+      await showHUD(`${Message.HUD.Connected} to "${primaryConnection.name}"`)
     } else {
-      await showHUD(Error.Generic)
+      await showHUD(Error.HUD.Generic)
     }
   } catch (e) {
     console.error(e)
